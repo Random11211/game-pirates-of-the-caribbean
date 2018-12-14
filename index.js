@@ -1,6 +1,6 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
+    width: 1000,
     height: 600,
     physics: {
         default: 'arcade',
@@ -10,37 +10,46 @@ var config = {
     },
     scene: {
         preload: preload,
-        create: create
+        create: create,
+        //update: update,
     }
 };
 
 var game = new Phaser.Game(config);
 
+var cursor;
+
 function preload()
 {
-    this.load.setBaseURL('http://labs.phaser.io');
-    this.load.image('sky', 'assets/skies/space3.png');
-    this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-    this.load.image('red', 'assets/particles/red.png');
+    this.load.image('logo', 'items/bomb2.png');
+    this.load.image('red', 'assets/red.png');
+    this.load.image('background', '/plansza/plaza.jpg');
 }
 
 function create()
 {
-    this.add.image(400, 300, 'sky');
+    this.add.image(400, 300, 'background');
+
+    //cursor = game.input.keyboard.createCursorKeys();
 
     var particles = this.add.particles('red');
 
     var emitter = particles.createEmitter({
-        speed: 100,
+        speed: 50,
         scale: { start: 1, end: 0 },
         blendMode: 'ADD'
     });
 
-    var logo = this.physics.add.image(400, 100, 'logo');
+    var logo = this.physics.add.image(100, 50, 'logo');
 
-    logo.setVelocity(100, 200);
+    logo.setVelocity(500, 150);
     logo.setBounce(1, 1);
     logo.setCollideWorldBounds(true);
 
     emitter.startFollow(logo);
 }
+
+//function update() {
+//    logo.body.velocity.x = 100;
+//    logo.body.velocity.y = 50;
+//}
