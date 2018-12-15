@@ -30,7 +30,7 @@ function create()
     // this.add.image(400, 300, 'background');
     this.map = this.make.tilemap({ key: 'mapa'});
     let tileset = this.map.addTilesetImage('plaza', 'tiles');
-    this.map.createStaticLayer('poziom1', tileset).resizeWorld();
+    this.map.createStaticLayer('poziom1', tileset);
     //layer1.resizeWorld();
 
     var particles = this.add.particles('red');
@@ -41,25 +41,25 @@ function create()
         blendMode: 'ADD'
     });
 
-    logo = this.physics.add.sprite(100, 50, 'logo');
+    //logo = this.physics.add.sprite(100, 50, 'logo');
 
-    controls = {
-        right : game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
-        left : game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-        up : game.input.keyboard.addKey(Phaser.Keyboard.UP),       
-    };
+    //controls = {
+    //    right : game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
+    //    left : game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
+    //    up : game.input.keyboard.addKey(Phaser.Keyboard.UP),       
+    //};
 
-    logo.setVelocity(20, 20);
-    logo.setBounce(0.9, 1.1);
-    logo.setCollideWorldBounds(true);
+    //logo.setVelocity(20, 20);
+    //logo.setBounce(0.9, 1.1);
+    //logo.setCollideWorldBounds(true);
 
-    emitter.startFollow(logo);
+    //emitter.startFollow(logo);
 }
 
 function update() {
-    if (controls.right.isDown) {
-        logo.x += speed;
-    }
+    //if (controls.right.isDown) {
+    //    logo.x += speed;
+    //}
     // if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
     //     logo.x += speed;
     // }
