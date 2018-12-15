@@ -1,7 +1,7 @@
 var config = {
     type: Phaser.AUTO,
-    width: 1000,
-    height: 600,
+    width: 800,
+    height: 800,
     physics: {
         default: 'arcade',
         arcade: {
@@ -18,17 +18,23 @@ var config = {
 var game = new Phaser.Game(config);
 
 var cursor;
+var mapa, layer1;
 
 function preload()
 {
     this.load.image('logo', 'items/bomb2.png');
-    this.load.image('red', 'assets/red.png');
-    this.load.image('background', '/plansza/plaza.jpg');
+    // this.load.image('background', '/plansza/plaza.jpg');
+    this.load.tilemap('mapa', 'mapa.json', null, Phaser.Tilemap.TILED_JSON);
+    this.load.image('tiles', 'plansza/plaza.png');
 }
 
 function create()
 {
-    this.add.image(400, 300, 'background');
+    // this.add.image(400, 300, 'background');
+    map = game.add.tilemap('mapa');
+    map.addTilesetImage('plaza', 'tiles');
+    layer1 = map.createLayer('poziom1');
+    layer1.resizeWorld();
 
     //cursor = game.input.keyboard.createCursorKeys();
 
