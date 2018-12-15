@@ -1,17 +1,7 @@
-var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 800,
-    scene: {
-        preload: preload,
-        create: create,
-        update: update,
-    }
-};
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
-var game = new Phaser.Game(config);
 var logo;
-var speed = 5;
+var speed = 50;
 var emitter;
 
 var cursor;
@@ -19,51 +9,52 @@ var mapa, layer1;
 
 function preload()
 {
-    this.load.image('logo', 'items/bomb2.png');
-    // this.load.image('background', '/plansza/plaza.jpg');
+    this.load.image('logo', 'items/coins.png');
+    this.load.image('background', '/plansza/plaza.jpg');
     this.load.tilemapTiledJSON('mapa', 'mapa.json');
     this.load.image('tiles', 'plansza/plaza.png');
+    this.load.spritesheet('dude', 'items/bomb2.png', { frameWidth: 32, frameHeight: 48 });
 }
+
+var player;
+var cursors;
 
 function create()
 {
-    // this.add.image(400, 300, 'background');
-    this.map = this.make.tilemap({ key: 'mapa'});
-    let tileset = this.map.addTilesetImage('plaza', 'tiles');
-    this.map.createStaticLayer('poziom1', tileset);
-    //layer1.resizeWorld();
+    game.add.image(0, 0, 'tiles');
+    
+    //this.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.defaultRestitution = 0.8;
 
-    var particles = this.add.particles('red');
+    player = this.add.sprite(32, game.world.height - 150, 'logo');
 
-    emitter = particles.createEmitter({
-        speed: 10,
-        scale: { start: 1, end: 0 },
-        blendMode: 'ADD'
-    });
+    game.physics.p2.enable(player);
+    player.body.setZeroDamping();
+    player.body.fixedRotation = true;
 
-    //logo = this.physics.add.sprite(100, 50, 'logo');
+    text = game.add.text(20, 20, 'move with arrow keys', { fill: '#ffffff' });
 
-    //controls = {
-    //    right : game.input.keyboard.addKey(Phaser.Keyboard.RIGHT),
-    //    left : game.input.keyboard.addKey(Phaser.Keyboard.LEFT),
-    //    up : game.input.keyboard.addKey(Phaser.Keyboard.UP),       
-    //};
-
-    //logo.setVelocity(20, 20);
-    //logo.setBounce(0.9, 1.1);
-    //logo.setCollideWorldBounds(true);
-
-    //emitter.startFollow(logo);
+    cursors = this.input.keyboard.createCursorKeys();
 }
 
 function update() {
-    //if (controls.right.isDown) {
-    //    logo.x += speed;
-    //}
-    // if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-    //     logo.x += speed;
-    // }
-    // else if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-    //     logo.x -= speed;
-    // }
+
+    if (cursors.right.isDown) {
+        player.body.moveRight(speed);
+    }
+    else if (cursors.left.isDown) {
+        player.body.moveLeft(speed);
+    }
+
+    if (cursors.up.isDown) {
+        player.body.moveUp(speed);
+    }
+    else if (cursors.down.isDown) {
+        player.body.moveDown(speed);
+    }
+    
+}
+
+function render() {
+    
 }
