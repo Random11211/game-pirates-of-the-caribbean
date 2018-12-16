@@ -108,18 +108,6 @@ var mainState = {
                     this.addWall(x, y);
                 } else if (x % 2 === 0 && y % 2 === 0) {
                     this.addInnerWall(x, y);
-                // } else {
-                //     if (Math.floor(Math.random() * 3)) {
-                //         if(x != 1 && x != 2 && y != 1 && y != 2){
-                //             this.addBrick(x, y);
-                //         }
-                //         if (Math.floor(Math.random() * 1.02)) {
-                //             this.addBoots(x, y);
-                //         }
-                //         if (Math.floor(Math.random() * 1.02)) {
-                //             this.addStar(x, y);
-                //         }
-                //     }
                 }
             }
         }
