@@ -2,7 +2,7 @@ var mainState = {
     preload: function () {
         // Map sprites
         game.load.image('ground', 'assets/bush.png');
-        game.load.image('innerwall', 'assets/wall.png');
+        game.load.image('innerwall', 'assets/palma.png');
         game.load.image('wall', 'assets/palma.png');
         game.load.image('brick', 'assets/flamingo.png');
 
@@ -11,11 +11,11 @@ var mainState = {
         game.load.image('explosion', 'assets/eksplozja.png');
 
         // Player sprites
-        game.load.image('bomber', 'assets/bomber.png');
-        game.load.image('bomber-front', 'assets/bomber-front.png');
-        game.load.image('bomber-left', 'assets/bomber-left.png');
-        game.load.image('bomber-right', 'assets/bomber-right.png');
-        game.load.image('bomber-back', 'assets/bomber-back.png');
+        game.load.image('bomber', 'assets/postac/postac-front.png');
+        game.load.image('bomber-front', 'assets/postac/postac-front.png');
+        game.load.image('bomber-left', 'assets/postac/postac-left.png');
+        game.load.image('bomber-right', 'assets/postac/postac-right.png');
+        game.load.image('bomber-back', 'assets/postac/postac-back.png');
 
         // Power up sprites
         game.load.image('boots', 'assets/lemon.png');
@@ -23,6 +23,7 @@ var mainState = {
 
         //other sprites
         game.load.image('background', 'assets/b22.jpg');
+        game.load.image('game-over', 'assets/game-over.jpg')
     },
 
     create: function () {
@@ -107,23 +108,42 @@ var mainState = {
                     this.addWall(x, y);
                 } else if (x % 2 === 0 && y % 2 === 0) {
                     this.addInnerWall(x, y);
-                } else {
-                    if (Math.floor(Math.random() * 3)) {
-                        this.addBrick(x, y);
-                        if (Math.floor(Math.random() * 1.02)) {
-                            this.addBoots(x, y);
-                        }
-                        if (Math.floor(Math.random() * 1.02)) {
-                            this.addStar(x, y);
-                        }
-                    }
+                // } else {
+                //     if (Math.floor(Math.random() * 3)) {
+                //         if(x != 1 && x != 2 && y != 1 && y != 2){
+                //             this.addBrick(x, y);
+                //         }
+                //         if (Math.floor(Math.random() * 1.02)) {
+                //             this.addBoots(x, y);
+                //         }
+                //         if (Math.floor(Math.random() * 1.02)) {
+                //             this.addStar(x, y);
+                //         }
+                //     }
                 }
             }
         }
+        this.addBrick(1,3), this.addBrick(1,4), this.addBrick(1,10), this.addBrick(1,11);
+        this.addBrick(2,3), this.addBrick(2,7);
+        this.addBrick(3,1), this.addBrick(3,4), this.addBrick(3,5), this.addBrick(3,10), this.addBrick(3,11);
+        this.addBrick(4,3), this.addBrick(4,5);
+        this.addBrick(5,4), this.addBrick(5,5), this.addBrick(5,9), this.addBrick(5,10), this.addBrick(5,12), this.addBrick(5,13);
+        this.addBrick(6,1), this.addBrick(6,3), this.addBrick(6,5), this.addBrick(6,7), this.addBrick(6,9), this.addBrick(6,13);
+        this.addBrick(7,1), this.addBrick(7,2), this.addBrick(7,3), this.addBrick(7,5), this.addBrick(7,6), this.addBrick(7,8), this.addBrick(7,9), this.addBrick(7,13);
+        this.addBrick(8,7), this.addBrick(8,9), this.addBrick(8,13);
+        this.addBrick(9,1), this.addBrick(9,2), this.addBrick(9,3), this.addBrick(9,9), this.addBrick(9,13);
+        this.addBrick(10,3), this.addBrick(10,9), this.addBrick(10,11), this.addBrick(10,13);
+        this.addBrick(11,2), this.addBrick(11,3), this.addBrick(11,4), this.addBrick(11,5), this.addBrick(11,6), this.addBrick(11,7), this.addBrick(11,8), this.addBrick(11,9), this.addBrick(11,10);
+        this.addBrick(12,1), this.addBrick(12,5), this.addBrick(12,11), this.addBrick(12,13);
+        this.addBrick(13,4), this.addBrick(13,5), this.addBrick(13,6);
+        //na (7,7) będzie ustawiony portal na nast lvl
+        this.addBoots(11,1), this.addBoots(9,10);
+        this.addStar(1,5), this.addStar(2,11);
     },
 
     burn: function () {
         this.player.kill();
+        game.add.image(0, 0, 'game-over');
     },
 
     speedUp: function () {
