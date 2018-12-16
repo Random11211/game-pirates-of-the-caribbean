@@ -25,6 +25,11 @@ var mainState = {
 
         //other sprites
         game.load.image('background', 'assets/b22.jpg');
+
+        //enemy sprites
+        game.load.image('easy-enemy', 'assets/kitty.png');
+        game.load.image('normal-enemy', 'assets/monkey.png');
+        game.load.image('hard-enemy', 'assets/kitty (1).png');
     },
 
     create: function () {
@@ -47,6 +52,16 @@ var mainState = {
 
         this.addPlayers();
         this.createMap();
+
+//timer dla wrogow
+timer = game.time.create(false);
+timer.loop(500, this.resetTimer, this);
+timer.start();
+        
+
+this.addStaticEnemy(10, 5);
+
+this.addMovingEnemy(12, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -74,6 +89,7 @@ var mainState = {
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
+            //this.enemyMove();
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -93,6 +109,7 @@ var mainState = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
+            this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -100,19 +117,24 @@ var mainState = {
                 this.dropBomb(1);
         }
 
+        if (enemyCanRun){
+            enemyCanRun = false;
+            this.enemyMove();
+        }
+
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
-        game.physics.arcade.overlap(this.player, this.explosionList, function () {
-            this.burn(1);
-        }, null, this);
+        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
+        game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
+        game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
+        game.physics.arcade.overlap(this.player, this.enemyList, this.enemyCollision, null, this);
+        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
+        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
+    },
 
-        game.physics.arcade.overlap(this.player, this.bootList, function () {
-            this.speedUp(1);
-        }, null, this);
-
-        game.physics.arcade.overlap(this.player, this.starList, function () {
-            this.starUp(1);
-        }, null, this);
+    enemycollide: function (enemy) {
+        enemy.body.velocity.x = 0;
+        enemy.body.velocity.y = 0;
     },
 
     createMap: function () {
@@ -170,6 +192,56 @@ var mainState = {
         this.starList.forEach(function (element) {
             element.kill();
         });
+    },
+
+    enemyCollision: function () {
+        this.player.kill();
+    },
+
+    addStaticEnemy: function (x, y) {
+        var staticEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'easy-enemy');
+        game.physics.arcade.enable(staticEnemy);
+        staticEnemy.body.collideWorldBounds = true;
+        this.enemyList.add(staticEnemy);
+    },
+
+    addMovingEnemy: function (x, y) {
+        var movingEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'normal-enemy');
+        game.physics.arcade.enable(movingEnemy);
+        movingEnemy.body.collideWorldBounds = true;
+        this.enemyList.add(movingEnemy);
+    },
+
+    enemyMove: function () {
+        this.enemyList.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
+    },
+
+    addStrongEnemy: function () {
+
+    },
+
+    enemyMoveDirection: function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1)) + a;
     },
 
     addStar: function (x, y) {
@@ -883,3 +955,7 @@ game.state.add('main', mainState);
 game.state.add('lvl2', secondLevel);
 game.state.add('lvl3', thirdLevel);
 game.state.start('main');
+var playerSpeed = 150;
+var timer;
+var i = 0;
+var enemyCanRun = true;
