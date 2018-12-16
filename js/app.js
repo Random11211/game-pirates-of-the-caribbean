@@ -169,11 +169,15 @@ this.addMovingEnemy(12, 5);
     burn: function () {
         this.player.kill();
         this.playerDrop = false;
+        this.gameOver();
+    },
+
+    gameOver: function () {
         game.add.image(0, 0, 'game-over');
     },
 
     speedUp: function () {
-        this.playerSpeed = 350;
+        this.playerSpeed = 250;
         this.bootList.forEach(function (element) {
             element.kill();
         });
