@@ -1,27 +1,18 @@
-/**
- * Project Name:    Bomberman
- * Project URL:     https://kevinpagtakhan.github.io/bomberman/
- * Description:     This is a game inspired by the original Bomberman developed using JavaScript and Phaser.
- * Version:         1.0.0
- * Author:          Kevin Pagtakhan
- * Author URI:      https://github.com/kevinpagtakhan
- **/
-
 var scoreBoard = document.querySelectorAll(".score");
 
 var mainState = {
     preload: function(){
         // Map sprites
-        game.load.image('ground', 'plansza/bush.png');
-        game.load.image('grass', 'plansza/grass.png');
-        game.load.image('wall', 'plansza/water.jpg');
-        game.load.image('brick', 'assets/brick.png');
+        game.load.image('ground', 'assets/bush.png');
+        // game.load.image('grass', 'plansza/bush.png');
+        game.load.image('wall', 'assets/palma.png');
+        game.load.image('brick', 'assets/flamingo.png');
         game.load.image('blue-flag', 'assets/blue-flag.png');
         game.load.image('red-flag', 'assets/red-flag.png');
 
         // Weapon sprites
-        game.load.image('bomb', 'items/bomb.png');
-        game.load.image('explosion', 'items/eksplozja.png');
+        game.load.image('bomb', 'assets/bomb.png');
+        game.load.image('explosion', 'assets/eksplozja.png');
 
         // Player sprites
         game.load.image('bomber', 'assets/bomber.png');
@@ -36,18 +27,19 @@ var mainState = {
         game.load.image('play-again', 'assets/play-again.png');
         
         // Power up sprites
-        game.load.image('boots', 'assets/boots.png');
-        game.load.image('star', 'assets/star.png');
+        game.load.image('boots', 'assets/lemon.png');
+        game.load.image('star', 'assets/strawberry.png');
 
-        game.load.image('background', 'plansza/plaza.png');
+        
+        game.load.image('background', 'assets/b22.jpg');
     },
 
     create: function(){
         this.BLOCK_COUNT = 15;
         this.PIXEL_SIZE = GAME_SIZE / this.BLOCK_COUNT;
 
-        //game.add.image(0, 0, 'background');
-        game.stage.backgroundColor = "#eac84b";
+        game.add.image(0, 0, 'background');
+        // game.stage.backgroundColor = "#eac84b";
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.world.enableBody = true;
 
@@ -59,7 +51,7 @@ var mainState = {
         }
 
         // Group container of game sprites
-        this.grassList = game.add.group();
+        // this.grassList = game.add.group();
         this.wallList = game.add.group();
         this.bootList = game.add.group();
         this.starList = game.add.group();
@@ -153,8 +145,8 @@ var mainState = {
                 }
                 else if(x % 2 === 0 && y % 2 === 0){
                     this.addWall(x, y);
-                } else if(x < 4 && y < 4 || x > 10 && y > 10){
-                    this.addGrass(x, y);
+                // } else if(x < 4 && y < 4 || x > 10 && y > 10){
+                //     this.addGrass(x, y);
                 } else {
                     if(Math.floor(Math.random() * 3)){
                         this.addBrick(x, y);
@@ -164,8 +156,8 @@ var mainState = {
                         if(Math.floor(Math.random() * 1.02)){
                             this.addStar(x, y);
                         }
-                    } else {
-                        this.addGrass(x, y);
+                    // } else {
+                    //     this.addGrass(x, y);
                     }
                 }
             }
@@ -280,13 +272,13 @@ var mainState = {
 
     },
 
-    addGrass: function(x, y){
-        var grass = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'grass');
-        game.physics.arcade.enable(grass);
-        grass.body.immovable = true;
-        this.grassList.add(grass);
+    // addGrass: function(x, y){
+    //     var grass = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'grass');
+    //     game.physics.arcade.enable(grass);
+    //     grass.body.immovable = true;
+    //     this.grassList.add(grass);
 
-    },
+    // },
 
     detonateBomb: function(player, x, y, explosionList, wallList, brickList){
         var fire = [
@@ -388,7 +380,7 @@ var mainState = {
             this.gameMessage.setTextBounds(0, 0, 600, 560);
             this.button = game.add.button(230, 300, 'next-round');
         } else{
-            this.background = game.add.tileSprite(40, 40, 520, 520, 'grass');
+            // this.background = game.add.tileSprite(40, 40, 520, 520, 'grass');
             var introString = "LET'S PLAY BOMBERMAN" + "\n";
                 introString += "You are in a mission to take control" + "\n";
                 introString += "of you opponents base. Drop bombs" + "\n";
