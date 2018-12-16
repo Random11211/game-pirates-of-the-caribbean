@@ -632,10 +632,9 @@ var secondLevel = {
         }
 
         game.physics.arcade.collide(this.player, this.treasureList);
-        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this);
+        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this)
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
-        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
         game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
         game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
         game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
@@ -923,7 +922,7 @@ var secondLevel = {
             });
 
             temp.list.forEach(function (element) {
-                mainState.addCoco(element.x / mainState.PIXEL_SIZE, element.y / mainState.PIXEL_SIZE);
+                secondLevel.addCoco(element.x / secondLevel.PIXEL_SIZE, element.y / secondLevel.PIXEL_SIZE);
                 element.kill();
             })
         }, 500);
@@ -1413,7 +1412,7 @@ var thirdLevel = {
             });
 
             temp.list.forEach(function (element) {
-                mainState.addCoco(element.x / mainState.PIXEL_SIZE, element.y / mainState.PIXEL_SIZE);
+                thirdLevel.addCoco(element.x / thirdLevel.PIXEL_SIZE, element.y / thirdLevel.PIXEL_SIZE);
                 element.kill();
             })
         }, 500);
