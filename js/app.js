@@ -1,12 +1,12 @@
 var mainState = {
     preload: function () {
         // Map sprites
-        game.load.image('treasure', 'assets/skrzynia.png');
+        game.load.image('treasure', 'assets/skrzynia2.png');
         game.load.image('innerwall', 'assets/palma.png');
         game.load.image('wall', 'assets/palma.png');
         game.load.image('brick', 'assets/flamingo.png');
         game.load.image('background', 'assets/b22.jpg');
-        game.load.image('game-over', 'assets/game-over.jpg')
+        game.load.image('game-over', 'assets/game-over.jpg');
 
         // Weapon sprites
         game.load.image('bomb', 'assets/bomb.png');
@@ -39,6 +39,7 @@ var mainState = {
         this.brickList = game.add.group();
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
+        this.treasureList = game.add.group();
 
         this.addPlayers();
         this.createMap();
@@ -84,6 +85,7 @@ var mainState = {
                 this.dropBomb(1);
         }
 
+        game.physics.arcade.collide(this.player, this.treasureList);
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
         game.physics.arcade.overlap(this.player, this.explosionList, function () {
@@ -125,11 +127,19 @@ var mainState = {
         //na (7,7) będzie ustawiony portal na nast lvl
         this.addBoots(11,1);
         this.addStar(2,11);
+        this.addTreasure(8,1), this.addTreasure(8,5), this.addTreasure(12,7), this.addTreasure(3,12), this.addTreasure(7,12);
     },
 
     burn: function () {
         this.player.kill();
         game.add.image(0, 0, 'game-over');
+    },
+
+    addTreasure: function (x,y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
     },
 
     speedUp: function () {
@@ -281,7 +291,7 @@ var mainState = {
 var secondLevel = {
     preload: function () {
         // Map sprites
-        game.load.image('treasure', 'assets/skrzynia.png');
+        game.load.image('treasure', 'assets/skrzynia2.png');
         game.load.image('innerwall', 'assets/duzo.png');
         game.load.image('wall', 'assets/duzo.png');
         game.load.image('brick', 'assets/stone.png');
@@ -319,6 +329,7 @@ var secondLevel = {
         this.brickList = game.add.group();
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
+        this.treasureList = game.add.group();
 
         this.addPlayers();
         this.createMap();
@@ -336,6 +347,7 @@ var secondLevel = {
     },
 
     update: function () {
+
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
@@ -363,6 +375,7 @@ var secondLevel = {
                 this.dropBomb(1);
         }
 
+        game.physics.arcade.collide(this.player, this.treasureList);
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
         game.physics.arcade.overlap(this.player, this.explosionList, function () {
@@ -404,11 +417,19 @@ var secondLevel = {
         //na (7,7) będzie ustawiony portal na nast lvl
         this.addBoots(11,1);
         this.addStar(2,11);
+        this.addTreasure(8,1), this.addTreasure(8,5), this.addTreasure(12,7), this.addTreasure(3,12), this.addTreasure(7,12);
     },
 
     burn: function () {
         this.player.kill();
         game.add.image(0, 0, 'game-over');
+    },
+
+    addTreasure: function (x,y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
     },
 
     speedUp: function () {
@@ -560,7 +581,7 @@ var secondLevel = {
 var thirdLevel = {
     preload: function () {
         // Map sprites
-        game.load.image('treasure', 'assets/skrzynia.png');
+        game.load.image('treasure', 'assets/skrzynia2.png');
         game.load.image('innerwall', 'assets/christmas-tree.png');
         game.load.image('wall', 'assets/christmas-tree.png');
         game.load.image('brick', 'assets/deer.png');
@@ -598,6 +619,7 @@ var thirdLevel = {
         this.brickList = game.add.group();
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
+        this.treasureList = game.add.group();
 
         this.addPlayers();
         this.createMap();
@@ -615,6 +637,7 @@ var thirdLevel = {
     },
 
     update: function () {
+
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
@@ -642,6 +665,7 @@ var thirdLevel = {
                 this.dropBomb(1);
         }
 
+        game.physics.arcade.collide(this.player, this.treasureList);
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
         game.physics.arcade.overlap(this.player, this.explosionList, function () {
@@ -683,11 +707,19 @@ var thirdLevel = {
         //na (7,7) będzie ustawiony portal na nast lvl
         this.addBoots(11,1);
         this.addStar(2,11);
+        this.addTreasure(8,1), this.addTreasure(8,5), this.addTreasure(12,7), this.addTreasure(3,12), this.addTreasure(7,12);
     },
 
     burn: function () {
         this.player.kill();
         game.add.image(0, 0, 'game-over');
+    },
+
+    addTreasure: function (x,y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
     },
 
     speedUp: function () {
