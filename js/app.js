@@ -1,10 +1,13 @@
 var scoreBoard = document.querySelectorAll(".score");
 
+var position = document.querySelectorAll(".pos");
+
 var mainState = {
     preload: function(){
         // Map sprites
         game.load.image('ground', 'assets/bush.png');
         // game.load.image('grass', 'plansza/bush.png');
+        game.load.image('innerwall', 'assets/wall.png');
         game.load.image('wall', 'assets/palma.png');
         game.load.image('brick', 'assets/flamingo.png');
         game.load.image('blue-flag', 'assets/blue-flag.png');
@@ -30,7 +33,7 @@ var mainState = {
         game.load.image('boots', 'assets/lemon.png');
         game.load.image('star', 'assets/strawberry.png');
 
-        
+        //other sprites
         game.load.image('background', 'assets/b22.jpg');
     },
 
@@ -39,16 +42,8 @@ var mainState = {
         this.PIXEL_SIZE = GAME_SIZE / this.BLOCK_COUNT;
 
         game.add.image(0, 0, 'background');
-        // game.stage.backgroundColor = "#eac84b";
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.world.enableBody = true;
-
-        // Adds ground to entire map
-        for (var x = 0; x < 15; x++) {
-            for (var y = 0; y < 15; y++) {
-                //this.addGround(x, y);
-            }
-        }
 
         // Group container of game sprites
         // this.grassList = game.add.group();
@@ -94,24 +89,21 @@ var mainState = {
             if (this.aKey.isDown){
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
-                // this.player_2.body.velocity.y = 0;
             }
             if (this.dKey.isDown){
                 this.player.body.velocity.x = (this.playerSpeed);
                 this.player.loadTexture('bomber-right', 0);
-                // this.player_2.body.velocity.y = 0;
             }
             if (this.wKey.isDown){
                 this.player.body.velocity.y = -(this.playerSpeed);
                 this.player.loadTexture('bomber-back', 0);
-                // this.player_2.body.velocity.x = 0;
             }
             if (this.sKey.isDown){
                 this.player.body.velocity.y = (this.playerSpeed);
                 this.player.loadTexture('bomber-front', 0);
-                // this.player_2.body.velocity.x = 0;
             }
-        } else{
+        } 
+        else{
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
         }
@@ -122,31 +114,36 @@ var mainState = {
         }
 
         game.physics.arcade.collide(this.player, this.wallList);
-        game.physics.arcade.collide(this.player, this.brickList);
+        // game.physics.arcade.collide(this.player, this.brickList);
+        // game.physics.arcade.overlap(this.player, this.explosionList, function(){this.burn(1);}, null, this);
+        // game.physics.arcade.overlap(this.explosionList, this.flagList.children[0], function(){this.getFlag(1);}, null, this);
+        // game.physics.arcade.overlap(this.player, this.bootList, function(){this.speedUp(1);}, null, this);
+        // game.physics.arcade.overlap(this.player, this.starList, function(){this.starUp(1);}, null, this);
 
-        game.physics.arcade.overlap(this.player, this.explosionList, function(){this.burn(1);}, null, this);
+        $(".pos").html("X: " + this.player.x + " Y: " + this.player.y);
+        var x = this.player.x - this.player.x % this.PIXEL_SIZE;
+        var y = this.player.y - this.player.y % this.PIXEL_SIZE;
+        var div = Math.trunc(this.player.x/ this.PIXEL_SIZE);
+        //$(".bomb").html("X: " + x + " Y: " + y);
+        $(".bomb").html(this.PIXEL_SIZE);
+    },
 
-        game.physics.arcade.overlap(this.explosionList, this.flagList.children[0], function(){this.getFlag(1);}, null, this);
+    getBombCords: function() {
 
-        game.physics.arcade.overlap(this.player, this.bootList, function(){this.speedUp(1);}, null, this);
-
-        game.physics.arcade.overlap(this.player, this.starList, function(){this.starUp(1);}, null, this);
     },
 
     createMap: function(){
-        for (var x = 0; x < 15; x++) {
-            for (var y = 0; y < 15; y++) {
+        for (var x = 0; x < this.BLOCK_COUNT; x++) {
+            for (var y = 0; y < this.BLOCK_COUNT; y++) {
                 if( x == 1 && x == y){
                     this.addBlueFlag();
                     this.addRedFlag();
                 }
-                if (x === 0 || y === 0 || x == 14 || y == 14){
+                if (x === 0 || y === 0 || x == this.BLOCK_COUNT - 1 || y == this.BLOCK_COUNT - 1){
                     this.addWall(x, y);
                 }
                 else if(x % 2 === 0 && y % 2 === 0){
-                    this.addWall(x, y);
-                // } else if(x < 4 && y < 4 || x > 10 && y > 10){
-                //     this.addGrass(x, y);
+                    this.addInnerWall(x, y);
                 } else {
                     if(Math.floor(Math.random() * 3)){
                         this.addBrick(x, y);
@@ -165,11 +162,11 @@ var mainState = {
     },
 
     burn: function(player){
-        // if(player == 1){
-        //     this.player.kill();
-        // } else {
-        //     this.player_2.kill();
-        // }
+        if(player == 1){
+             this.player.kill();
+         } else {
+             this.player_2.kill();
+        }
 
         // if(gameInPlay){
         //     var score = Number(scoreBoard[player - 1].innerText);
@@ -235,9 +232,8 @@ var mainState = {
 
     addPlayers: function(){
 
-        this.player = game.add.sprite(GAME_SIZE - 2 * this.PIXEL_SIZE, GAME_SIZE - 2 * this.PIXEL_SIZE, 'bomber');
+        this.player = game.add.sprite(1 * this.PIXEL_SIZE, 1 * this.PIXEL_SIZE, 'bomber');
         game.physics.arcade.enable(this.player);
-
     },
 
     addBlueFlag: function(){
@@ -264,6 +260,13 @@ var mainState = {
 
     },
 
+    addInnerWall: function(x, y) {
+        var innerwall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'innerwall');
+        game.physics.arcade.enable(innerwall);
+        innerwall.body.immovable = true;
+        this.wallList.add(innerwall);
+    },
+
     addBrick: function(x, y){
         var brick = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'brick');
         game.physics.arcade.enable(brick);
@@ -271,14 +274,6 @@ var mainState = {
         this.brickList.add(brick);
 
     },
-
-    // addGrass: function(x, y){
-    //     var grass = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'grass');
-    //     game.physics.arcade.enable(grass);
-    //     grass.body.immovable = true;
-    //     this.grassList.add(grass);
-
-    // },
 
     detonateBomb: function(player, x, y, explosionList, wallList, brickList){
         var fire = [
@@ -365,12 +360,6 @@ var mainState = {
 
     enablePlayerBomb: function(player){
         this.playerDrop = true;
-    },
-
-    addGround: function(x, y){
-        var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'ground');
-        wall.body.immovable = true;
-
     },
 
     showRoundWinner: function(player){
