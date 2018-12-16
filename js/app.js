@@ -29,7 +29,7 @@ var mainState = {
         //enemy sprites
         game.load.image('easy-enemy', 'assets/kitty.png');
         game.load.image('normal-enemy', 'assets/monkey.png');
-        game.load.image('hard-enemy', 'assets/kitty (1).png');
+        game.load.image('hard-enemy', 'assets/snowman.png');
     },
 
     create: function () {
@@ -47,9 +47,11 @@ var mainState = {
         this.brickList = game.add.group();
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
-        this.enemyList = game.add.group();
         this.treasureList = game.add.group();
         this.cocoCollectionList = game.add.group();
+        this.easyEnemies = game.add.group();
+        this.normalEnemies = game.add.group();
+        this.hardEnemies = game.add.group();
 
         this.addPlayers();
         this.createMap();
@@ -62,9 +64,17 @@ timer.loop(500, this.resetTimer, this);
 timer.start();
         
 
-this.addStaticEnemy(10, 5);
+        this.addEasyEnemy(10,5);
+        this.addEasyEnemy(10,5);
+        this.addEasyEnemy(10,5);
 
-this.addMovingEnemy(12, 5);
+        this.addNormalEnemy(5,5);
+        this.addNormalEnemy(5,5);
+        this.addNormalEnemy(5,5);
+
+        this.addStrongEnemy(15,5);
+        this.addStrongEnemy(15,5);
+        this.addStrongEnemy(15,5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -82,10 +92,23 @@ this.addMovingEnemy(12, 5);
         enemyCanRun = true;
     },
 
+    addTreasure: function (x, y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
+    },
+
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
-            //this.enemyMove();
+            this.hardEnemies.forEach(function(enemy) {
+                enemy.resume();
+            })
+            this.hardEnemyMove();
+            
+
+
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -105,7 +128,10 @@ this.addMovingEnemy(12, 5);
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
-            this.enemyList.forEach(this.enemycollide);
+            this.hardEnemies.forEach(function(enemy) {
+                enemy.pause();
+            })
+            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -113,9 +139,9 @@ this.addMovingEnemy(12, 5);
                 this.dropBomb(1);
         }
 
-        if (enemyCanRun){
+        if (enemyCanRun) {
             enemyCanRun = false;
-            this.enemyMove();
+            this.normalEnemyMove();
         }
 
         game.physics.arcade.collide(this.player, this.treasureList);
@@ -125,7 +151,10 @@ this.addMovingEnemy(12, 5);
         game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
         game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
         game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
-        game.physics.arcade.overlap(this.player, this.enemyList, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.easyEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
+
         //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
         //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
     },
@@ -145,23 +174,23 @@ this.addMovingEnemy(12, 5);
                 }
             }
         }
-        this.addBrick(1,3), this.addBrick(1,4), this.addBrick(1,10), this.addBrick(1,11);
-        this.addBrick(2,3), this.addBrick(2,7);
-        this.addBrick(3,1), this.addBrick(3,4), this.addBrick(3,5), this.addBrick(3,10), this.addBrick(3,11);
-        this.addBrick(4,3), this.addBrick(4,5);
-        this.addBrick(5,4), this.addBrick(5,5), this.addBrick(5,9), this.addBrick(5,10), this.addBrick(5,12), this.addBrick(5,13);
-        this.addBrick(6,1), this.addBrick(6,3), this.addBrick(6,5), this.addBrick(6,7), this.addBrick(6,9), this.addBrick(6,13);
-        this.addBrick(7,1), this.addBrick(7,2), this.addBrick(7,3), this.addBrick(7,5), this.addBrick(7,6), this.addBrick(7,8), this.addBrick(7,9), this.addBrick(7,13);
-        this.addBrick(8,7), this.addBrick(8,9), this.addBrick(8,13);
-        this.addBrick(9,1), this.addBrick(9,2), this.addBrick(9,3), this.addBrick(9,9), this.addBrick(9,13);
-        this.addBrick(10,3), this.addBrick(10,9), this.addBrick(10,11), this.addBrick(10,13);
-        this.addBrick(11,2), this.addBrick(11,3), this.addBrick(11,4), this.addBrick(11,5), this.addBrick(11,6), this.addBrick(11,7), this.addBrick(11,8), this.addBrick(11,9), this.addBrick(11,10);
-        this.addBrick(12,1), this.addBrick(12,5), this.addBrick(12,11), this.addBrick(12,13);
-        this.addBrick(13,4), this.addBrick(13,5), this.addBrick(13,6);
+        this.addBrick(1, 3); this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        this.addBrick(2, 3); this.addBrick(2, 7);
+        this.addBrick(3, 1); this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        this.addBrick(4, 3); this.addBrick(4, 5);
+        this.addBrick(5, 4); this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        this.addBrick(6, 1); this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        this.addBrick(7, 1); this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        this.addBrick(8, 7); this.addBrick(8, 9), this.addBrick(8, 13);
+        this.addBrick(9, 1); this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         //na (7,7) będzie ustawiony portal na nast lvl
-        this.addBoots(11,1);
-        this.addStar(2,11);
-        this.addTreasure(8,1), this.addTreasure(8,5), this.addTreasure(12,7), this.addTreasure(3,12), this.addTreasure(7,12);
+        this.addBoots(11, 1);
+        this.addStar(2, 11);
+        this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
     },
 
     burn: function () {
@@ -219,25 +248,32 @@ this.addMovingEnemy(12, 5);
     },
 
     enemyCollision: function () {
-        this.player.kill();
+        this.burn();
     },
 
-    addStaticEnemy: function (x, y) {
+    addEasyEnemy: function (x, y) {
         var staticEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'easy-enemy');
         game.physics.arcade.enable(staticEnemy);
         staticEnemy.body.collideWorldBounds = true;
-        this.enemyList.add(staticEnemy);
+        this.easyEnemies.add(staticEnemy);
     },
 
-    addMovingEnemy: function (x, y) {
+    addNormalEnemy: function (x, y) {
         var movingEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'normal-enemy');
         game.physics.arcade.enable(movingEnemy);
         movingEnemy.body.collideWorldBounds = true;
-        this.enemyList.add(movingEnemy);
+        this.normalEnemies.add(movingEnemy);
     },
 
-    enemyMove: function () {
-        this.enemyList.forEach(function (enemy) {
+    addStrongEnemy: function (x, y) {
+        var strongEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'hard-enemy');
+        game.physics.arcade.enable(strongEnemy);
+        strongEnemy.body.collideWorldBounds = true;
+        this.hardEnemies.add(strongEnemy);
+    },
+
+    normalEnemyMove: function () {
+        this.normalEnemies.forEach(function (enemy) {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
             switch (direction) {
                 case 0:
@@ -260,8 +296,28 @@ this.addMovingEnemy(12, 5);
         });
     },
 
-    addStrongEnemy: function () {
-
+    hardEnemyMove: function () {
+        this.hardEnemies.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
     },
 
     enemyMoveDirection: function (a, b) {
@@ -525,23 +581,23 @@ var secondLevel = {
                 }
             }
         }
-        this.addBrick(1,3), this.addBrick(1,4), this.addBrick(1,10), this.addBrick(1,11);
-        this.addBrick(2,3), this.addBrick(2,7);
-        this.addBrick(3,1), this.addBrick(3,4), this.addBrick(3,5), this.addBrick(3,10), this.addBrick(3,11);
-        this.addBrick(4,3), this.addBrick(4,5);
-        this.addBrick(5,4), this.addBrick(5,5), this.addBrick(5,9), this.addBrick(5,10), this.addBrick(5,12), this.addBrick(5,13);
-        this.addBrick(6,1), this.addBrick(6,3), this.addBrick(6,5), this.addBrick(6,7), this.addBrick(6,9), this.addBrick(6,13);
-        this.addBrick(7,1), this.addBrick(7,2), this.addBrick(7,3), this.addBrick(7,5), this.addBrick(7,6), this.addBrick(7,8), this.addBrick(7,9), this.addBrick(7,13);
-        this.addBrick(8,7), this.addBrick(8,9), this.addBrick(8,13);
-        this.addBrick(9,1), this.addBrick(9,2), this.addBrick(9,3), this.addBrick(9,9), this.addBrick(9,13);
-        this.addBrick(10,3), this.addBrick(10,9), this.addBrick(10,11), this.addBrick(10,13);
-        this.addBrick(11,2), this.addBrick(11,3), this.addBrick(11,4), this.addBrick(11,5), this.addBrick(11,6), this.addBrick(11,7), this.addBrick(11,8), this.addBrick(11,9), this.addBrick(11,10);
-        this.addBrick(12,1), this.addBrick(12,5), this.addBrick(12,11), this.addBrick(12,13);
-        this.addBrick(13,4), this.addBrick(13,5), this.addBrick(13,6);
+        this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        this.addBrick(2, 3), this.addBrick(2, 7);
+        this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        this.addBrick(4, 3), this.addBrick(4, 5);
+        this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
+        this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         //na (7,7) będzie ustawiony portal na nast lvl
-        this.addBoots(11,1);
-        this.addStar(2,11);
-        this.addTreasure(8,1), this.addTreasure(8,5), this.addTreasure(12,7), this.addTreasure(3,12), this.addTreasure(7,12);
+        this.addBoots(11, 1);
+        this.addStar(2, 11);
+        this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
     },
 
     burn: function () {
@@ -549,7 +605,7 @@ var secondLevel = {
         game.add.image(0, 0, 'game-over');
     },
 
-    addTreasure: function (x,y) {
+    addTreasure: function (x, y) {
         var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
         game.physics.arcade.enable(treasure);
         treasure.body.immovable = true;
@@ -815,23 +871,23 @@ var thirdLevel = {
                 }
             }
         }
-        this.addBrick(1,3), this.addBrick(1,4), this.addBrick(1,10), this.addBrick(1,11);
-        this.addBrick(2,3), this.addBrick(2,7);
-        this.addBrick(3,1), this.addBrick(3,4), this.addBrick(3,5), this.addBrick(3,10), this.addBrick(3,11);
-        this.addBrick(4,3), this.addBrick(4,5);
-        this.addBrick(5,4), this.addBrick(5,5), this.addBrick(5,9), this.addBrick(5,10), this.addBrick(5,12), this.addBrick(5,13);
-        this.addBrick(6,1), this.addBrick(6,3), this.addBrick(6,5), this.addBrick(6,7), this.addBrick(6,9), this.addBrick(6,13);
-        this.addBrick(7,1), this.addBrick(7,2), this.addBrick(7,3), this.addBrick(7,5), this.addBrick(7,6), this.addBrick(7,8), this.addBrick(7,9), this.addBrick(7,13);
-        this.addBrick(8,7), this.addBrick(8,9), this.addBrick(8,13);
-        this.addBrick(9,1), this.addBrick(9,2), this.addBrick(9,3), this.addBrick(9,9), this.addBrick(9,13);
-        this.addBrick(10,3), this.addBrick(10,9), this.addBrick(10,11), this.addBrick(10,13);
-        this.addBrick(11,2), this.addBrick(11,3), this.addBrick(11,4), this.addBrick(11,5), this.addBrick(11,6), this.addBrick(11,7), this.addBrick(11,8), this.addBrick(11,9), this.addBrick(11,10);
-        this.addBrick(12,1), this.addBrick(12,5), this.addBrick(12,11), this.addBrick(12,13);
-        this.addBrick(13,4), this.addBrick(13,5), this.addBrick(13,6);
+        this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        this.addBrick(2, 3), this.addBrick(2, 7);
+        this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        this.addBrick(4, 3), this.addBrick(4, 5);
+        this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
+        this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         //na (7,7) będzie ustawiony portal na nast lvl
-        this.addBoots(11,1);
-        this.addStar(2,11);
-        this.addTreasure(8,1), this.addTreasure(8,5), this.addTreasure(12,7), this.addTreasure(3,12), this.addTreasure(7,12);
+        this.addBoots(11, 1);
+        this.addStar(2, 11);
+        this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
     },
 
     burn: function () {
@@ -839,7 +895,7 @@ var thirdLevel = {
         game.add.image(0, 0, 'game-over');
     },
 
-    addTreasure: function (x,y) {
+    addTreasure: function (x, y) {
         var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
         game.physics.arcade.enable(treasure);
         treasure.body.immovable = true;
