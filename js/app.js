@@ -66,8 +66,6 @@ var mainState = {
         timer.start();
 
 
-        this.addCoco(1,1);
-
         // this.addEasyEnemy(10, 5);
         // this.addEasyEnemy(10, 5);
         // this.addEasyEnemy(10, 5);
@@ -161,11 +159,7 @@ var mainState = {
 
         //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
         //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
-
-        game.physics.arcade.collide(this.player, this.portalList);
-        if(this.cocoAmount == 5){
-            game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
-        }
+        game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
     },
 
     enemycollide: function (enemy) {
@@ -197,7 +191,7 @@ var mainState = {
         this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
         this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         //na (7,7) będzie ustawiony portal na nast lvl
-        this.addPortal(7,7);
+        this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
         this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
@@ -231,7 +225,7 @@ var mainState = {
         console.log("Liczba kokosów: " + this.cocoAmount);
     },
 
-    addPortal: function (x,y) {
+    addPortal: function (x, y) {
         var portal = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'portal');
         game.physics.arcade.enable(portal);
         portal.body.immovable = true;
@@ -239,10 +233,12 @@ var mainState = {
     },
 
     nextLevel: function () {
-        console.log(game.state.getCurrentState().key);
-        console.log(game.state.getCurrentState());
-        console.log(game.state.current);
-        console.log(game.state.getCurrentState().name);
+        if (this.cocoAmount >= 5) {
+            this.portalList.forEach(function (element) {
+                element.kill();
+                game.state.start('lvl2');
+            })
+        }
     },
 
     gameOver: function () {
@@ -441,11 +437,7 @@ var mainState = {
             });
 
             temp.list.forEach(function (element) {
-                mainState.addCoco(element.x / this.PIXEL_SIZE, element.y / this.PIXEL_SIZE);
-                // var coco = game.add.sprite(element.x, element.y, 'coco');
-                // game.physics.arcade.enable(coco);
-                // coco.body.immovable = true;
-                // this.cocoCollectionList.add(coco); //to nie działa!
+                mainState.addCoco(element.x / mainState.PIXEL_SIZE, element.y / mainState.PIXEL_SIZE);
                 element.kill();
             })
         }, 500);
@@ -517,6 +509,15 @@ var secondLevel = {
         // Power up sprites
         game.load.image('boots', 'assets/pineapple.png');
         game.load.image('star', 'assets/banana.png');
+
+        //going to next level sprites		
+        game.load.image('coco', 'assets/coconut.png');
+        game.load.image('portal', 'assets/portal.png');
+
+        //enemy sprites		
+        game.load.image('easy-enemy', 'assets/kitty.png');
+        game.load.image('normal-enemy', 'assets/monkey.png');
+        game.load.image('hard-enemy', 'assets/snowman.png');
     },
 
     create: function () {
@@ -535,9 +536,34 @@ var secondLevel = {
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
         this.treasureList = game.add.group();
+        this.cocoCollectionList = game.add.group();
+        this.easyEnemies = game.add.group();
+        this.normalEnemies = game.add.group();
+        this.hardEnemies = game.add.group();
+        this.portalList = game.add.group();
 
         this.addPlayers();
         this.createMap();
+
+        this.cocoAmount = 0;
+
+        //timer dla wrogow		
+        timer = game.time.create(false);
+        timer.loop(500, this.resetTimer, this);
+        timer.start();
+
+
+        // this.addEasyEnemy(10, 5);		
+        // this.addEasyEnemy(10, 5);		
+        // this.addEasyEnemy(10, 5);		
+
+        // this.addNormalEnemy(5, 5);		
+        // this.addNormalEnemy(5, 5);		
+        // this.addNormalEnemy(5, 5);		
+
+        // this.addStrongEnemy(15, 5);		
+        // this.addStrongEnemy(15, 5);		
+        // this.addStrongEnemy(15, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -551,9 +577,25 @@ var secondLevel = {
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
+    resetTimer: function () {
+        enemyCanRun = true;
+    },
+
+    addTreasure: function (x, y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
+    },
+
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
+            this.hardEnemies.forEach(function (enemy) {
+                //enemy.resume();		
+            })
+            this.hardEnemyMove();
+
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -573,6 +615,10 @@ var secondLevel = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
+            this.hardEnemies.forEach(function (enemy) {
+                //enemy.pause();		
+            })
+            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -580,20 +626,31 @@ var secondLevel = {
                 this.dropBomb(1);
         }
 
+        if (enemyCanRun) {
+            enemyCanRun = false;
+            this.normalEnemyMove();
+        }
+
         game.physics.arcade.collide(this.player, this.treasureList);
+        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this);
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
-        game.physics.arcade.overlap(this.player, this.explosionList, function () {
-            this.burn(1);
-        }, null, this);
+        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
+        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
+        game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
+        game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
+        game.physics.arcade.overlap(this.player, this.easyEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
 
-        game.physics.arcade.overlap(this.player, this.bootList, function () {
-            this.speedUp(1);
-        }, null, this);
+        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
+        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
+        game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
+    },
 
-        game.physics.arcade.overlap(this.player, this.starList, function () {
-            this.starUp(1);
-        }, null, this);
+    enemycollide: function (enemy) {
+        enemy.body.velocity.x = 0;
+        enemy.body.velocity.y = 0;
     },
 
     createMap: function () {
@@ -620,6 +677,7 @@ var secondLevel = {
         this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
         this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         //na (7,7) będzie ustawiony portal na nast lvl
+        this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
         this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
@@ -627,6 +685,7 @@ var secondLevel = {
 
     burn: function () {
         this.player.kill();
+        this.playerDrop = false;
         this.gameOver();
     },
 
@@ -637,8 +696,43 @@ var secondLevel = {
         this.treasureList.add(treasure);
     },
 
+    addCoco: function (x, y) {
+        var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
+        game.physics.arcade.enable(coco);
+        coco.body.immovable = true;
+        this.cocoCollectionList.add(coco);
+    },
+
+    collectCoco: function () {
+        this.cocoCollectionList.forEach(function (element) {
+            element.kill();
+        });
+        this.cocoAmount++;
+        console.log("Liczba kokosów: " + this.cocoAmount);
+    },
+
+    addPortal: function (x, y) {
+        var portal = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'portal');
+        game.physics.arcade.enable(portal);
+        portal.body.immovable = true;
+        this.portalList.add(portal);
+    },
+
+    nextLevel: function () {
+        if (this.cocoAmount >= 5) {
+            this.portalList.forEach(function (element) {
+                element.kill();
+                game.state.start('lvl3');
+            })
+        }
+    },
+
+    gameOver: function () {
+        game.add.image(0, 0, 'game-over');
+    },
+
     speedUp: function () {
-        this.playerSpeed = 350;
+        this.playerSpeed = 250;
         this.bootList.forEach(function (element) {
             element.kill();
         });
@@ -657,6 +751,84 @@ var secondLevel = {
         this.starList.forEach(function (element) {
             element.kill();
         });
+    },
+
+    enemyCollision: function () {
+        this.burn();
+        this.gameOver();
+    },
+
+    addEasyEnemy: function (x, y) {
+        var staticEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'easy-enemy');
+        game.physics.arcade.enable(staticEnemy);
+        staticEnemy.body.collideWorldBounds = true;
+        this.easyEnemies.add(staticEnemy);
+    },
+
+    addNormalEnemy: function (x, y) {
+        var movingEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'normal-enemy');
+        game.physics.arcade.enable(movingEnemy);
+        movingEnemy.body.collideWorldBounds = true;
+        this.normalEnemies.add(movingEnemy);
+    },
+
+    addStrongEnemy: function (x, y) {
+        var strongEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'hard-enemy');
+        game.physics.arcade.enable(strongEnemy);
+        strongEnemy.body.collideWorldBounds = true;
+        this.hardEnemies.add(strongEnemy);
+    },
+
+    normalEnemyMove: function () {
+        this.normalEnemies.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
+    },
+
+    hardEnemyMove: function () {
+        this.hardEnemies.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
+    },
+
+    enemyMoveDirection: function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1)) + a;
     },
 
     addStar: function (x, y) {
@@ -694,7 +866,7 @@ var secondLevel = {
 
     },
 
-    detonateBomb: function (x, y, explosionList, wallList, brickList) {
+    detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
         var fire = [
             game.add.sprite(x, y, 'explosion'),
             game.add.sprite(x, y + 40, 'explosion'),
@@ -740,6 +912,20 @@ var secondLevel = {
             temp.list.forEach(function (element) {
                 element.kill();
             });
+
+            temp = treasureList.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (element.x == fire[i].x && element.y == fire[i].y) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                mainState.addCoco(element.x / mainState.PIXEL_SIZE, element.y / mainState.PIXEL_SIZE);
+                element.kill();
+            })
         }, 500);
     },
 
@@ -751,6 +937,7 @@ var secondLevel = {
         var explosionList;
         var wallList;
         var brickList;
+        var treasureList;
 
         if (this.playerDrop) {
             this.playerDrop = false;
@@ -766,10 +953,11 @@ var secondLevel = {
             explosionList = this.explosionList;
             wallList = this.wallList;
             brickList = this.brickList;
+            treasureList = this.treasureList;
 
             setTimeout(function () {
                 bomb.kill();
-                detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList);
+                detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList, treasureList);
                 secondLevel.enablePlayerBomb(2);
             }, 1000);
 
@@ -807,6 +995,15 @@ var thirdLevel = {
         // Power up sprites
         game.load.image('boots', 'assets/candy-cane.png');
         game.load.image('star', 'assets/gingerbread-man.png');
+
+        //going to next level sprites		
+        game.load.image('coco', 'assets/coconut.png');
+        game.load.image('portal', 'assets/portal.png');
+
+        //enemy sprites		
+        game.load.image('easy-enemy', 'assets/kitty.png');
+        game.load.image('normal-enemy', 'assets/monkey.png');
+        game.load.image('hard-enemy', 'assets/snowman.png');
     },
 
     create: function () {
@@ -825,9 +1022,34 @@ var thirdLevel = {
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
         this.treasureList = game.add.group();
+        this.cocoCollectionList = game.add.group();
+        this.easyEnemies = game.add.group();
+        this.normalEnemies = game.add.group();
+        this.hardEnemies = game.add.group();
+        this.portalList = game.add.group();
 
         this.addPlayers();
         this.createMap();
+
+        this.cocoAmount = 0;
+
+        //timer dla wrogow		
+        timer = game.time.create(false);
+        timer.loop(500, this.resetTimer, this);
+        timer.start();
+
+
+        // this.addEasyEnemy(10, 5);		
+        // this.addEasyEnemy(10, 5);		
+        // this.addEasyEnemy(10, 5);		
+
+        // this.addNormalEnemy(5, 5);		
+        // this.addNormalEnemy(5, 5);		
+        // this.addNormalEnemy(5, 5);		
+
+        // this.addStrongEnemy(15, 5);		
+        // this.addStrongEnemy(15, 5);		
+        // this.addStrongEnemy(15, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -841,9 +1063,25 @@ var thirdLevel = {
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
+    resetTimer: function () {
+        enemyCanRun = true;
+    },
+
+    addTreasure: function (x, y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
+    },
+
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
+            this.hardEnemies.forEach(function (enemy) {
+                //enemy.resume();		
+            })
+            this.hardEnemyMove();
+
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -863,6 +1101,10 @@ var thirdLevel = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
+            this.hardEnemies.forEach(function (enemy) {
+                //enemy.pause();		
+            })
+            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -870,20 +1112,31 @@ var thirdLevel = {
                 this.dropBomb(1);
         }
 
+        if (enemyCanRun) {
+            enemyCanRun = false;
+            this.normalEnemyMove();
+        }
+
         game.physics.arcade.collide(this.player, this.treasureList);
+        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this);
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
-        game.physics.arcade.overlap(this.player, this.explosionList, function () {
-            this.burn(1);
-        }, null, this);
+        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
+        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
+        game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
+        game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
+        game.physics.arcade.overlap(this.player, this.easyEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
 
-        game.physics.arcade.overlap(this.player, this.bootList, function () {
-            this.speedUp(1);
-        }, null, this);
+        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
+        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
+        game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
+    },
 
-        game.physics.arcade.overlap(this.player, this.starList, function () {
-            this.starUp(1);
-        }, null, this);
+    enemycollide: function (enemy) {
+        enemy.body.velocity.x = 0;
+        enemy.body.velocity.y = 0;
     },
 
     createMap: function () {
@@ -910,6 +1163,7 @@ var thirdLevel = {
         this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
         this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         //na (7,7) będzie ustawiony portal na nast lvl
+        this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
         this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
@@ -917,7 +1171,8 @@ var thirdLevel = {
 
     burn: function () {
         this.player.kill();
-        game.add.image(0, 0, 'game-over');
+        this.playerDrop = false;
+        this.gameOver();
     },
 
     addTreasure: function (x, y) {
@@ -927,8 +1182,47 @@ var thirdLevel = {
         this.treasureList.add(treasure);
     },
 
+    addCoco: function (x, y) {
+        var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
+        game.physics.arcade.enable(coco);
+        coco.body.immovable = true;
+        this.cocoCollectionList.add(coco);
+    },
+
+    collectCoco: function () {
+        this.cocoCollectionList.forEach(function (element) {
+            element.kill();
+        });
+        this.cocoAmount++;
+        console.log("Liczba kokosów: " + this.cocoAmount);
+    },
+
+    addPortal: function (x, y) {
+        var portal = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'portal');
+        game.physics.arcade.enable(portal);
+        portal.body.immovable = true;
+        this.portalList.add(portal);
+    },
+
+    finish: function () {
+        //tutaj końcowa grafika!!!
+    },
+
+    nextLevel: function () {
+        if (this.cocoAmount >= 5) {
+            this.portalList.forEach(function (element) {
+                element.kill();
+                finish();
+            })
+        }
+    },
+
+    gameOver: function () {
+        game.add.image(0, 0, 'game-over');
+    },
+
     speedUp: function () {
-        this.playerSpeed = 350;
+        this.playerSpeed = 250;
         this.bootList.forEach(function (element) {
             element.kill();
         });
@@ -947,6 +1241,84 @@ var thirdLevel = {
         this.starList.forEach(function (element) {
             element.kill();
         });
+    },
+
+    enemyCollision: function () {
+        this.burn();
+        this.gameOver();
+    },
+
+    addEasyEnemy: function (x, y) {
+        var staticEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'easy-enemy');
+        game.physics.arcade.enable(staticEnemy);
+        staticEnemy.body.collideWorldBounds = true;
+        this.easyEnemies.add(staticEnemy);
+    },
+
+    addNormalEnemy: function (x, y) {
+        var movingEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'normal-enemy');
+        game.physics.arcade.enable(movingEnemy);
+        movingEnemy.body.collideWorldBounds = true;
+        this.normalEnemies.add(movingEnemy);
+    },
+
+    addStrongEnemy: function (x, y) {
+        var strongEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'hard-enemy');
+        game.physics.arcade.enable(strongEnemy);
+        strongEnemy.body.collideWorldBounds = true;
+        this.hardEnemies.add(strongEnemy);
+    },
+
+    normalEnemyMove: function () {
+        this.normalEnemies.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
+    },
+
+    hardEnemyMove: function () {
+        this.hardEnemies.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
+    },
+
+    enemyMoveDirection: function (a, b) {
+        return Math.floor(Math.random() * (b - a + 1)) + a;
     },
 
     addStar: function (x, y) {
@@ -984,7 +1356,7 @@ var thirdLevel = {
 
     },
 
-    detonateBomb: function (x, y, explosionList, wallList, brickList) {
+    detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
         var fire = [
             game.add.sprite(x, y, 'explosion'),
             game.add.sprite(x, y + 40, 'explosion'),
@@ -1030,6 +1402,20 @@ var thirdLevel = {
             temp.list.forEach(function (element) {
                 element.kill();
             });
+
+            temp = treasureList.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (element.x == fire[i].x && element.y == fire[i].y) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                mainState.addCoco(element.x / mainState.PIXEL_SIZE, element.y / mainState.PIXEL_SIZE);
+                element.kill();
+            })
         }, 500);
     },
 
@@ -1041,6 +1427,7 @@ var thirdLevel = {
         var explosionList;
         var wallList;
         var brickList;
+        var treasureList;
 
         if (this.playerDrop) {
             this.playerDrop = false;
@@ -1056,10 +1443,11 @@ var thirdLevel = {
             explosionList = this.explosionList;
             wallList = this.wallList;
             brickList = this.brickList;
+            treasureList = this.treasureList;
 
             setTimeout(function () {
                 bomb.kill();
-                detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList);
+                detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList, treasureList);
                 thirdLevel.enablePlayerBomb(3);
             }, 1000);
 
