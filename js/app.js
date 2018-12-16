@@ -25,11 +25,6 @@ var mainState = {
 
         //other sprites
         game.load.image('background', 'assets/b22.jpg');
-
-        //enemy sprites
-        game.load.image('easy-enemy', 'assets/kitty.png');
-        game.load.image('normal-enemy', 'assets/monkey.png');
-        game.load.image('hard-enemy', 'assets/kitty (1).png');
     },
 
     create: function () {
@@ -39,11 +34,6 @@ var mainState = {
         game.add.image(0, 0, 'background');
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.world.enableBody = true;
-
-        //timer dla wrogow
-        timer = game.time.create(false);
-        timer.loop(500, this.resetTimer, this);
-        timer.start();
 
         // Group container of game sprites
         this.wallList = game.add.group();
@@ -58,10 +48,6 @@ var mainState = {
         this.addPlayers();
         this.createMap();
 
-        this.addStaticEnemy(10, 5);
-
-        this.addMovingEnemy(12, 5);
-
         this.playerSpeed = 150;
         this.playerPower = false;
         this.playerDrop = true;
@@ -72,8 +58,6 @@ var mainState = {
         this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
         this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-        //game.time.events.loop(Phaser.Timer.SECOND, this.enemyMove, this);
     },
 
     resetTimer: function () {
@@ -90,7 +74,6 @@ var mainState = {
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
-            //this.enemyMove();
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -110,7 +93,6 @@ var mainState = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
-            this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -118,24 +100,19 @@ var mainState = {
                 this.dropBomb(1);
         }
 
-        if (enemyCanRun){
-            enemyCanRun = false;
-            this.enemyMove();
-        }
-
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
-        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
-        game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
-        game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
-        game.physics.arcade.overlap(this.player, this.enemyList, this.enemyCollision, null, this);
-        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
-        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
-    },
+        game.physics.arcade.overlap(this.player, this.explosionList, function () {
+            this.burn(1);
+        }, null, this);
 
-    enemycollide: function (enemy) {
-        enemy.body.velocity.x = 0;
-        enemy.body.velocity.y = 0;
+        game.physics.arcade.overlap(this.player, this.bootList, function () {
+            this.speedUp(1);
+        }, null, this);
+
+        game.physics.arcade.overlap(this.player, this.starList, function () {
+            this.starUp(1);
+        }, null, this);
     },
 
     createMap: function () {
@@ -195,10 +172,6 @@ var mainState = {
         });
     },
 
-    enemyCollision: function () {
-        this.player.kill();
-    },
-
     addStar: function (x, y) {
         var star = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'star');
         game.physics.arcade.enable(star);
@@ -209,48 +182,6 @@ var mainState = {
     addPlayers: function () {
         this.player = game.add.sprite(1 * this.PIXEL_SIZE, 1 * this.PIXEL_SIZE, 'bomber');
         game.physics.arcade.enable(this.player);
-    },
-
-    addStaticEnemy: function (x, y) {
-        var staticEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'easy-enemy');
-        game.physics.arcade.enable(staticEnemy);
-        staticEnemy.body.collideWorldBounds = true;
-        this.enemyList.add(staticEnemy);
-    },
-
-    addMovingEnemy: function (x, y) {
-        var movingEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'normal-enemy');
-        game.physics.arcade.enable(movingEnemy);
-        movingEnemy.body.collideWorldBounds = true;
-        this.enemyList.add(movingEnemy);
-    },
-
-    enemyMove: function () {
-        this.enemyList.forEach(function (enemy) {
-            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
-            switch (direction) {
-                case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
-                    break;
-                case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
-                    enemy.body.velocity.y = 0;
-                    break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-            }
-        });
-    },
-
-    addStrongEnemy: function () {
-
     },
 
     addWall: function (x, y) {
@@ -363,10 +294,6 @@ var mainState = {
     enablePlayerBomb: function () {
         this.playerDrop = true;
     },
-
-    enemyMoveDirection: function (a, b) {
-        return Math.floor(Math.random() * (b - a + 1)) + a;
-    }
 };
 
 var secondLevel = {
@@ -950,13 +877,8 @@ var thirdLevel = {
 }
 
 var GAME_SIZE = 600;
-var enemyCanRun = true;
 var gameInPlay = true;
-var gameLevel = 1;
 var game = new Phaser.Game(GAME_SIZE, GAME_SIZE);
-var playerSpeed = 150;
-var timer;
-var i = 0;
 game.state.add('main', mainState);
 game.state.add('lvl2', secondLevel);
 game.state.add('lvl3', thirdLevel);
