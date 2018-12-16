@@ -30,7 +30,7 @@ var mainState = {
         //enemy sprites
         game.load.image('easy-enemy', 'assets/kitty.png');
         game.load.image('normal-enemy', 'assets/monkey.png');
-        game.load.image('hard-enemy', 'assets/kitty (1).png');
+        game.load.image('hard-enemy', 'assets/snowman.png');
     },
 
     create: function () {
@@ -48,9 +48,11 @@ var mainState = {
         this.brickList = game.add.group();
         this.bombList = game.add.group();
         this.explosionList = game.add.group();
-        this.enemyList = game.add.group();
         this.treasureList = game.add.group();
         this.cocoCollectionList = game.add.group();
+        this.easyEnemies = game.add.group();
+        this.normalEnemies = game.add.group();
+        this.hardEnemies = game.add.group();
         this.portalList = game.add.group();
 
         this.addPlayers();
@@ -64,9 +66,19 @@ var mainState = {
         timer.start();
 
 
-        this.addStaticEnemy(10, 5);
+        this.addCoco(1,1);
 
-        this.addMovingEnemy(12, 5);
+        // this.addEasyEnemy(10, 5);
+        // this.addEasyEnemy(10, 5);
+        // this.addEasyEnemy(10, 5);
+
+        // this.addNormalEnemy(5, 5);
+        // this.addNormalEnemy(5, 5);
+        // this.addNormalEnemy(5, 5);
+
+        // this.addStrongEnemy(15, 5);
+        // this.addStrongEnemy(15, 5);
+        // this.addStrongEnemy(15, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -84,10 +96,23 @@ var mainState = {
         enemyCanRun = true;
     },
 
+    addTreasure: function (x, y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
+    },
+
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
-            //this.enemyMove();
+            this.hardEnemies.forEach(function (enemy) {
+                //enemy.resume();
+            })
+            this.hardEnemyMove();
+
+
+
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -107,7 +132,10 @@ var mainState = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
-            this.enemyList.forEach(this.enemycollide);
+            this.hardEnemies.forEach(function (enemy) {
+                //enemy.pause();
+            })
+            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -117,7 +145,7 @@ var mainState = {
 
         if (enemyCanRun) {
             enemyCanRun = false;
-            this.enemyMove();
+            this.normalEnemyMove();
         }
 
         game.physics.arcade.collide(this.player, this.treasureList);
@@ -127,7 +155,10 @@ var mainState = {
         game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
         game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
         game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
-        game.physics.arcade.overlap(this.player, this.enemyList, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.easyEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
+        game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
+
         //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
         //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
 
@@ -185,12 +216,12 @@ var mainState = {
         this.treasureList.add(treasure);
     },
 
-    // addCoco: function (x,y) {
-    //     var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
-    //     game.physics.arcade.enable(coco);
-    //     coco.body.immovable = true;
-    //     this.cocoCollectionList.add(coco);
-    // },
+    addCoco: function (x, y) {
+        var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
+        game.physics.arcade.enable(coco);
+        coco.body.immovable = true;
+        this.cocoCollectionList.add(coco);
+    },
 
     collectCoco: function () {
         this.cocoCollectionList.forEach(function (element) {
@@ -241,26 +272,33 @@ var mainState = {
     },
 
     enemyCollision: function () {
-        this.player.kill();
+        this.burn();
         this.gameOver();
     },
 
-    addStaticEnemy: function (x, y) {
+    addEasyEnemy: function (x, y) {
         var staticEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'easy-enemy');
         game.physics.arcade.enable(staticEnemy);
         staticEnemy.body.collideWorldBounds = true;
-        this.enemyList.add(staticEnemy);
+        this.easyEnemies.add(staticEnemy);
     },
 
-    addMovingEnemy: function (x, y) {
+    addNormalEnemy: function (x, y) {
         var movingEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'normal-enemy');
         game.physics.arcade.enable(movingEnemy);
         movingEnemy.body.collideWorldBounds = true;
-        this.enemyList.add(movingEnemy);
+        this.normalEnemies.add(movingEnemy);
     },
 
-    enemyMove: function () {
-        this.enemyList.forEach(function (enemy) {
+    addStrongEnemy: function (x, y) {
+        var strongEnemy = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'hard-enemy');
+        game.physics.arcade.enable(strongEnemy);
+        strongEnemy.body.collideWorldBounds = true;
+        this.hardEnemies.add(strongEnemy);
+    },
+
+    normalEnemyMove: function () {
+        this.normalEnemies.forEach(function (enemy) {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
             switch (direction) {
                 case 0:
@@ -283,8 +321,28 @@ var mainState = {
         });
     },
 
-    addStrongEnemy: function () {
-
+    hardEnemyMove: function () {
+        this.hardEnemies.forEach(function (enemy) {
+            var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+            switch (direction) {
+                case 0:
+                    enemy.body.velocity.x = (this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 1:
+                    enemy.body.velocity.y = (this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+                case 2:
+                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.y = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.y = -(this.playerSpeed);
+                    enemy.body.velocity.x = 0;
+                    break;
+            }
+        });
     },
 
     enemyMoveDirection: function (a, b) {
@@ -383,11 +441,11 @@ var mainState = {
             });
 
             temp.list.forEach(function (element) {
-                // addCoco(element.x / PIXEL_SIZE, element.y / PIXEL_SIZE);
-                var coco = game.add.sprite(element.x, element.y, 'coco');
-                game.physics.arcade.enable(coco);
-                coco.body.immovable = true;
-                // cocoCollectionList.add(coco); //to nie działa!
+                mainState.addCoco(element.x / this.PIXEL_SIZE, element.y / this.PIXEL_SIZE);
+                // var coco = game.add.sprite(element.x, element.y, 'coco');
+                // game.physics.arcade.enable(coco);
+                // coco.body.immovable = true;
+                // this.cocoCollectionList.add(coco); //to nie działa!
                 element.kill();
             })
         }, 500);
