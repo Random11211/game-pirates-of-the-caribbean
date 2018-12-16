@@ -64,17 +64,19 @@ var mainState = {
         timer.start();
 
 
-        this.addEasyEnemy(10, 5);
-        this.addEasyEnemy(10, 5);
-        this.addEasyEnemy(10, 5);
+        this.addCoco(1,1);
 
-        this.addNormalEnemy(5, 5);
-        this.addNormalEnemy(5, 5);
-        this.addNormalEnemy(5, 5);
+        // this.addEasyEnemy(10, 5);
+        // this.addEasyEnemy(10, 5);
+        // this.addEasyEnemy(10, 5);
 
-        this.addStrongEnemy(15, 5);
-        this.addStrongEnemy(15, 5);
-        this.addStrongEnemy(15, 5);
+        // this.addNormalEnemy(5, 5);
+        // this.addNormalEnemy(5, 5);
+        // this.addNormalEnemy(5, 5);
+
+        // this.addStrongEnemy(15, 5);
+        // this.addStrongEnemy(15, 5);
+        // this.addStrongEnemy(15, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -215,12 +217,12 @@ var mainState = {
         this.treasureList.add(treasure);
     },
 
-    // addCoco: function (x,y) {
-    //     var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
-    //     game.physics.arcade.enable(coco);
-    //     coco.body.immovable = true;
-    //     this.cocoCollectionList.add(coco);
-    // },
+    addCoco: function (x, y) {
+        var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
+        game.physics.arcade.enable(coco);
+        coco.body.immovable = true;
+        this.cocoCollectionList.add(coco);
+    },
 
     collectCoco: function () {
         this.cocoCollectionList.forEach(function (element) {
@@ -425,11 +427,11 @@ var mainState = {
             });
 
             temp.list.forEach(function (element) {
-                // addCoco(element.x / PIXEL_SIZE, element.y / PIXEL_SIZE);
-                var coco = game.add.sprite(element.x, element.y, 'coco');
-                game.physics.arcade.enable(coco);
-                coco.body.immovable = true;
-                // cocoCollectionList.add(coco); //to nie działa!
+                mainState.addCoco(element.x / this.PIXEL_SIZE, element.y / this.PIXEL_SIZE);
+                // var coco = game.add.sprite(element.x, element.y, 'coco');
+                // game.physics.arcade.enable(coco);
+                // coco.body.immovable = true;
+                // this.cocoCollectionList.add(coco); //to nie działa!
                 element.kill();
             })
         }, 500);
