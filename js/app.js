@@ -23,8 +23,8 @@ var mainState = {
         game.load.image('boots', 'assets/lemon.png');
         game.load.image('star', 'assets/strawberry.png');
 
-        //other sprites
-        game.load.image('background', 'assets/b22.jpg');
+        //going to next level sprites
+        game.load.image('coco', 'assets/coconut.png');
 
         //enemy sprites
         game.load.image('easy-enemy', 'assets/kitty.png');
@@ -49,9 +49,12 @@ var mainState = {
         this.explosionList = game.add.group();
         this.enemyList = game.add.group();
         this.treasureList = game.add.group();
+        this.cocoCollectionList = game.add.group();
 
         this.addPlayers();
         this.createMap();
+
+        this.cocoAmount = 0;
 
 //timer dla wrogow
 timer = game.time.create(false);
@@ -77,13 +80,6 @@ this.addMovingEnemy(12, 5);
 
     resetTimer: function () {
         enemyCanRun = true;
-    },
-
-    addTreasure: function (x,y) {
-        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
-        game.physics.arcade.enable(treasure);
-        treasure.body.immovable = true;
-        this.treasureList.add(treasure);
     },
 
     update: function () {
@@ -122,6 +118,8 @@ this.addMovingEnemy(12, 5);
             this.enemyMove();
         }
 
+        game.physics.arcade.collide(this.player, this.treasureList);
+        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this)
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
         game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
@@ -170,6 +168,28 @@ this.addMovingEnemy(12, 5);
         this.player.kill();
         this.playerDrop = false;
         this.gameOver();
+    },
+
+    addTreasure: function (x,y) {
+        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
+        game.physics.arcade.enable(treasure);
+        treasure.body.immovable = true;
+        this.treasureList.add(treasure);
+    },
+
+    // addCoco: function (x,y) {
+    //     var coco = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'coco');
+    //     game.physics.arcade.enable(coco);
+    //     coco.body.immovable = true;
+    //     this.cocoCollectionList.add(coco);
+    // },
+
+    collectCoco: function () {
+        this.cocoCollectionList.forEach(function (element) {
+            element.kill();
+        });
+        this.cocoAmount++;
+        console.log("Liczba kokosów: "+this.cocoAmount);
     },
 
     gameOver: function () {
@@ -283,7 +303,7 @@ this.addMovingEnemy(12, 5);
 
     },
 
-    detonateBomb: function (x, y, explosionList, wallList, brickList) {
+    detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
         var fire = [
             game.add.sprite(x, y, 'explosion'),
             game.add.sprite(x, y + 40, 'explosion'),
@@ -329,6 +349,24 @@ this.addMovingEnemy(12, 5);
             temp.list.forEach(function (element) {
                 element.kill();
             });
+
+            temp = treasureList.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (element.x == fire[i].x && element.y == fire[i].y) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                // addCoco(element.x / PIXEL_SIZE, element.y / PIXEL_SIZE);
+                var coco = game.add.sprite(element.x, element.y, 'coco');
+                game.physics.arcade.enable(coco);
+                coco.body.immovable = true;
+                // cocoCollectionList.add(coco); //to nie działa!
+                element.kill();
+            })
         }, 500);
     },
 
@@ -340,6 +378,7 @@ this.addMovingEnemy(12, 5);
         var explosionList;
         var wallList;
         var brickList;
+        var treasureList;
 
         if (this.playerDrop) {
             this.playerDrop = false;
@@ -355,10 +394,11 @@ this.addMovingEnemy(12, 5);
             explosionList = this.explosionList;
             wallList = this.wallList;
             brickList = this.brickList;
+            treasureList = this.treasureList;
 
             setTimeout(function () {
                 bomb.kill();
-                detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList);
+                detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList, treasureList);
                 mainState.enablePlayerBomb(1);
             }, 1000);
 
@@ -582,7 +622,7 @@ var secondLevel = {
             game.add.sprite(x - 40, y, 'explosion')
         ];
 
-        if (mainState.playerPower) {
+        if (secondLevel.playerPower) {
             fire.push(game.add.sprite(x, y + 80, 'explosion'));
             fire.push(game.add.sprite(x, y - 80, 'explosion'));
             fire.push(game.add.sprite(x + 80, y, 'explosion'));
@@ -649,7 +689,7 @@ var secondLevel = {
             setTimeout(function () {
                 bomb.kill();
                 detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList);
-                mainState.enablePlayerBomb(1);
+                secondLevel.enablePlayerBomb(2);
             }, 1000);
 
             setTimeout(this.thisEnableBomb, 2000);
@@ -872,7 +912,7 @@ var thirdLevel = {
             game.add.sprite(x - 40, y, 'explosion')
         ];
 
-        if (mainState.playerPower) {
+        if(thirdLevel.playerPower) {
             fire.push(game.add.sprite(x, y + 80, 'explosion'));
             fire.push(game.add.sprite(x, y - 80, 'explosion'));
             fire.push(game.add.sprite(x + 80, y, 'explosion'));
@@ -939,7 +979,7 @@ var thirdLevel = {
             setTimeout(function () {
                 bomb.kill();
                 detonateBomb(bomb.x, bomb.y, explosionList, wallList, brickList);
-                mainState.enablePlayerBomb(1);
+                thirdLevel.enablePlayerBomb(3);
             }, 1000);
 
             setTimeout(this.thisEnableBomb, 2000);
