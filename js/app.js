@@ -34,7 +34,7 @@ var mainState = {
     },
 
     render: function() {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#ADD8E6", "bold 20px Arial");
     },
 
     create: function () {
@@ -593,7 +593,7 @@ var secondLevel = {
     },
 
     render: function() {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#006400", "bold 20px Arial");
     },
 
     resetTimer: function () {
@@ -1104,7 +1104,7 @@ var thirdLevel = {
     },
 
     render: function() {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#B22222", "bold 20px Arial");
     },
 
 
