@@ -28,9 +28,9 @@ var mainState = {
         game.load.image('portal', 'assets/portal.png');
 
         //enemy sprites
-        game.load.image('easy-enemy', 'assets/kitty.png');
-        game.load.image('normal-enemy', 'assets/monkey.png');
-        game.load.image('hard-enemy', 'assets/snowman.png');
+        game.load.image('easy-enemy', 'assets/linux.png');
+        game.load.image('normal-enemy', 'assets/statek.png');
+        game.load.image('hard-enemy', 'assets/kitty2.png');
     },
 
     render: function() {
@@ -540,9 +540,9 @@ var secondLevel = {
         game.load.image('portal', 'assets/portal.png');
 
         //enemy sprites		
-        game.load.image('easy-enemy', 'assets/kitty.png');
+        game.load.image('easy-enemy', 'assets/tiger.png');
         game.load.image('normal-enemy', 'assets/monkey.png');
-        game.load.image('hard-enemy', 'assets/snowman.png');
+        game.load.image('hard-enemy', 'assets/parrot.png');
     },
 
     create: function () {
@@ -1050,9 +1050,9 @@ var thirdLevel = {
         game.load.image('portal', 'assets/portal.png');
 
         //enemy sprites		
-        game.load.image('easy-enemy', 'assets/kitty.png');
-        game.load.image('normal-enemy', 'assets/monkey.png');
-        game.load.image('hard-enemy', 'assets/snowman.png');
+        game.load.image('easy-enemy', 'assets/snowman.png');
+        game.load.image('normal-enemy', 'assets/snowman2.png');
+        game.load.image('hard-enemy', 'assets/snowman3.png');
     },
 
     create: function () {
