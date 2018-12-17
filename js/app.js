@@ -37,8 +37,8 @@ var mainState = {
         game.load.image('hard-enemy', 'assets/kitty2.png');
     },
 
-    render: function () {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
+    render: function() {
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#ADD8E6", "bold 20px Arial");
     },
 
     create: function () {
@@ -646,8 +646,8 @@ var secondLevel = {
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
-    render: function () {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
+    render: function() {
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#006400", "bold 20px Arial");
     },
 
     resetTimer: function () {
@@ -1195,8 +1195,8 @@ var thirdLevel = {
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
-    render: function () {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
+    render: function() {
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#B22222", "bold 20px Arial");
     },
 
 
