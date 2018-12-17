@@ -12,6 +12,9 @@ var mainState = {
         game.load.image('bomb', 'assets/bomb.png');
         game.load.image('explosion', 'assets/eksplozja.png');
 
+        //animacje
+        game.load.spritesheet('boom', 'assets/boom.png', 40, 40, 14);
+
         // Player sprites
         game.load.image('bomber', 'assets/postac/postac-front.png');
         game.load.image('bomber-front', 'assets/postac/postac-front.png');
@@ -33,7 +36,7 @@ var mainState = {
         game.load.image('hard-enemy', 'assets/snowman.png');
     },
 
-    render: function() {
+    render: function () {
         game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
     },
 
@@ -354,19 +357,54 @@ var mainState = {
     },
 
     detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
-        var fire = [
-            game.add.sprite(x, y, 'explosion'),
-            game.add.sprite(x, y + 40, 'explosion'),
-            game.add.sprite(x, y - 40, 'explosion'),
-            game.add.sprite(x + 40, y, 'explosion'),
-            game.add.sprite(x - 40, y, 'explosion')
-        ];
+        var fire = [];
+
+        explosion = game.add.sprite(x, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x, y + 40, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x, y - 40, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x + 40, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x - 40, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
 
         if (mainState.playerPower) {
-            fire.push(game.add.sprite(x, y + 80, 'explosion'));
-            fire.push(game.add.sprite(x, y - 80, 'explosion'));
-            fire.push(game.add.sprite(x + 80, y, 'explosion'));
-            fire.push(game.add.sprite(x - 80, y, 'explosion'));
+            explosion = game.add.sprite(x, y + 80, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x, y - 80, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x + 80, y, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x - 80, y, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
         }
 
         for (var i = 0; i < fire.length; i++) {
@@ -385,6 +423,7 @@ var mainState = {
 
         setTimeout(function () {
             explosionList.forEach(function (element) {
+
                 element.kill();
             });
             var temp = brickList.filter(function (element) {
@@ -457,6 +496,7 @@ var mainState = {
             temp.list.forEach(function (element) {
                 element.kill();
             });
+
 
 
         }, 500);
@@ -592,7 +632,7 @@ var secondLevel = {
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
-    render: function() {
+    render: function () {
         game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
     },
 
@@ -866,19 +906,54 @@ var secondLevel = {
     },
 
     detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
-        var fire = [
-            game.add.sprite(x, y, 'explosion'),
-            game.add.sprite(x, y + 40, 'explosion'),
-            game.add.sprite(x, y - 40, 'explosion'),
-            game.add.sprite(x + 40, y, 'explosion'),
-            game.add.sprite(x - 40, y, 'explosion')
-        ];
+        var fire = [];
+
+        explosion = game.add.sprite(x, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x, y + 40, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x, y - 40, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x + 40, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x - 40, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
 
         if (secondLevel.playerPower) {
-            fire.push(game.add.sprite(x, y + 80, 'explosion'));
-            fire.push(game.add.sprite(x, y - 80, 'explosion'));
-            fire.push(game.add.sprite(x + 80, y, 'explosion'));
-            fire.push(game.add.sprite(x - 80, y, 'explosion'));
+            explosion = game.add.sprite(x, y + 80, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(e xplosion);
+
+            explosion = game.add.sprite(x, y - 80, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x + 80, y, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x - 80, y, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
         }
 
         for (var i = 0; i < fire.length; i++) {
@@ -1103,7 +1178,7 @@ var thirdLevel = {
         this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     },
 
-    render: function() {
+    render: function () {
         game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#FFFFFF", "bold 30px Arial");
     },
 
@@ -1390,19 +1465,54 @@ var thirdLevel = {
     },
 
     detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
-        var fire = [
-            game.add.sprite(x, y, 'explosion'),
-            game.add.sprite(x, y + 40, 'explosion'),
-            game.add.sprite(x, y - 40, 'explosion'),
-            game.add.sprite(x + 40, y, 'explosion'),
-            game.add.sprite(x - 40, y, 'explosion')
-        ];
+        var fire = [];
+
+        explosion = game.add.sprite(x, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x, y + 40, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x, y - 40, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x + 40, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
+        explosion = game.add.sprite(x - 40, y, 'boom');
+        explosion.animations.add('boom1');
+        explosion.play('boom1', 15, false, true);
+        fire.push(explosion);
+
 
         if (thirdLevel.playerPower) {
-            fire.push(game.add.sprite(x, y + 80, 'explosion'));
-            fire.push(game.add.sprite(x, y - 80, 'explosion'));
-            fire.push(game.add.sprite(x + 80, y, 'explosion'));
-            fire.push(game.add.sprite(x - 80, y, 'explosion'));
+            explosion = game.add.sprite(x, y + 80, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x, y - 80, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x + 80, y, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
+
+            explosion = game.add.sprite(x - 80, y, 'boom');
+            explosion.animations.add('boom1');
+            explosion.play('boom1', 15, false, true);
+            fire.push(explosion);
         }
 
         for (var i = 0; i < fire.length; i++) {
