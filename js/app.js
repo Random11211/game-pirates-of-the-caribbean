@@ -2,8 +2,6 @@ var mainState = {
     preload: function () {
         // Map sprites
         game.load.image('treasure', 'assets/skrzynia2.png');
-        //game.load.image('innerwall', 'assets/palma.png');
-        //game.load.image('wall', 'assets/palma.png');
         game.load.image('brick', 'assets/flamingo.png');
         game.load.image('background', 'assets/b22.jpg');
         game.load.image('game-over', 'assets/game-over.jpg');
@@ -38,7 +36,7 @@ var mainState = {
     },
 
     render: function() {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#ADD8E6", "bold 20px Arial");
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount + "/5", 20, 30, "#ADD8E6", "bold 20px Arial");
     },
 
     create: function () {
@@ -73,11 +71,12 @@ var mainState = {
         timer.loop(1000, this.resetTimer, this);
         timer.start();
 
-        this.addNormalEnemy(5, 6);
-        this.addNormalEnemy(5, 6);
-        this.addStrongEnemy(7, 5);
-        this.addStrongEnemy(7, 5);
-        this.addEasyEnemy(2,5);
+        // this.addNormalEnemy(5, 6);
+        // this.addNormalEnemy(5, 6);
+        // this.addNormalEnemy(10,7);
+        // this.addEasyEnemy(7, 11);
+        // this.addEasyEnemy(2,5);
+        // this.addEasyEnemy(9,5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -161,19 +160,19 @@ var mainState = {
                 }
             }
         }
-        this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
-        this.addBrick(2, 3), this.addBrick(2, 7);
-        this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
-        this.addBrick(4, 3), this.addBrick(4, 5);
-        this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
-        this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
-        this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
-        this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
-        this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
-        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
-        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
-        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
-        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
+        // this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        // this.addBrick(2, 3), this.addBrick(2, 7);
+        // this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        // this.addBrick(4, 3), this.addBrick(4, 5);
+        // this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        // this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        // this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        // this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
+        // this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        // this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        // this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        // this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        // this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
@@ -338,17 +337,11 @@ var mainState = {
 
     addWall: function (x, y) {
         var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
-        //var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
         game.physics.arcade.enable(wall);
         wall.body.immovable = true;
         wall.animations.add('palma1');
         wall.play('palma1', 5, true);
         this.wallList.add(wall);
-
-        // var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
-        // game.physics.arcade.enable(wall);
-        // wall.body.immovable = true;
-        // this.wallList.add(wall);
     },
     
     addInnerWall: function (x, y) {
@@ -631,8 +624,14 @@ var secondLevel = {
         timer.loop(1000, this.resetTimer, this);
         timer.start();
 
+        // this.addNormalEnemy(5, 7);
         // this.addNormalEnemy(1, 6);
-        // this.addStrongEnemy(2, 5);
+        // this.addNormalEnemy(7, 11);
+        // this.addStrongEnemy(14, 14);
+        // this.addStrongEnemy(5, 5);
+        // this.addEasyEnemy(4,1);
+        // this.addEasyEnemy(9,7);
+        // this.addEasyEnemy(10,1);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -647,7 +646,7 @@ var secondLevel = {
     },
 
     render: function() {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#006400", "bold 20px Arial");
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount + "/5", 20, 30, "#006400", "bold 20px Arial");
     },
 
     resetTimer: function () {
@@ -720,19 +719,19 @@ var secondLevel = {
                 }
             }
         }
-        this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
-        this.addBrick(2, 3), this.addBrick(2, 7);
-        this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
-        this.addBrick(4, 3), this.addBrick(4, 5);
-        this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
-        this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
-        this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
-        this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
-        this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
-        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
-        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
-        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
-        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
+        // this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        // this.addBrick(2, 3), this.addBrick(2, 7);
+        // this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        // this.addBrick(4, 3), this.addBrick(4, 5);
+        // this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        // this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        // this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        // this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
+        // this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        // this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        // this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        // this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        // this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
@@ -1181,7 +1180,17 @@ var thirdLevel = {
 
 
         this.addNormalEnemy(1, 6);
-        this.addStrongEnemy(2, 5);
+        this.addNormalEnemy(1, 14);
+        this.addNormalEnemy(13, 13);
+        this.addNormalEnemy(9, 7);
+        this.addStrongEnemy(7, 11);
+        this.addStrongEnemy(5, 12);
+        this.addStrongEnemy(10, 5);
+        this.addEasyEnemy(5,6);
+        this.addEasyEnemy(5,6);
+        this.addEasyEnemy(11,6);
+        this.addEasyEnemy(13,13);
+        this.addEasyEnemy(5,6);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -1196,7 +1205,7 @@ var thirdLevel = {
     },
 
     render: function() {
-        game.debug.text("Zebrane kokosy: " + this.cocoAmount, 20, 30, "#B22222", "bold 20px Arial");
+        game.debug.text("Zebrane kokosy: " + this.cocoAmount + "/5", 20, 30, "#B22222", "bold 20px Arial");
     },
 
 
