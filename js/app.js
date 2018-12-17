@@ -2,8 +2,8 @@ var mainState = {
     preload: function () {
         // Map sprites
         game.load.image('treasure', 'assets/skrzynia2.png');
-        game.load.image('innerwall', 'assets/palma.png');
-        game.load.image('wall', 'assets/palma.png');
+        //game.load.image('innerwall', 'assets/palma.png');
+        //game.load.image('wall', 'assets/palma.png');
         game.load.image('brick', 'assets/flamingo.png');
         game.load.image('background', 'assets/b22.jpg');
         game.load.image('game-over', 'assets/game-over.jpg');
@@ -14,6 +14,7 @@ var mainState = {
 
         //animacje
         game.load.spritesheet('boom', 'assets/boom.png', 40, 40, 14);
+        game.load.spritesheet('palma', 'assets/palma.png', 40, 40, 4);
 
         // Player sprites
         game.load.image('bomber', 'assets/postac/postac-front.png');
@@ -76,6 +77,7 @@ var mainState = {
         this.addNormalEnemy(5, 6);
         this.addStrongEnemy(7, 5);
         this.addStrongEnemy(7, 5);
+        this.addEasyEnemy(2,5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -335,30 +337,39 @@ var mainState = {
     },
 
     addWall: function (x, y) {
-        var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'wall');
+        var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
+        //var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
         game.physics.arcade.enable(wall);
         wall.body.immovable = true;
+        wall.animations.add('palma1');
+        wall.play('palma1', 5, true);
         this.wallList.add(wall);
 
+        // var wall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
+        // game.physics.arcade.enable(wall);
+        // wall.body.immovable = true;
+        // this.wallList.add(wall);
     },
-
+    
     addInnerWall: function (x, y) {
-        var innerwall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'innerwall');
+        var innerwall = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'palma');
         game.physics.arcade.enable(innerwall);
         innerwall.body.immovable = true;
+        innerwall.animations.add('palma1');
+        innerwall.play('palma1', 5, true);
         this.wallList.add(innerwall);
     },
-
+    
     addBrick: function (x, y) {
         var brick = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'brick');
         game.physics.arcade.enable(brick);
         brick.body.immovable = true;
         this.brickList.add(brick);
     },
-
+    
     detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
         var fire = [];
-
+        
         explosion = game.add.sprite(x, y, 'boom');
         explosion.animations.add('boom1');
         explosion.play('boom1', 15, false, true);
@@ -563,6 +574,9 @@ var secondLevel = {
         // Weapon sprites
         game.load.image('bomb', 'assets/bomb.png');
         game.load.image('explosion', 'assets/eksplozja.png');
+
+        //animacje
+        game.load.spritesheet('boom', 'assets/boom.png', 40, 40, 14);
 
         // Player sprites
         game.load.image('bomber', 'assets/postac/postac-front.png');
@@ -938,7 +952,7 @@ var secondLevel = {
             explosion = game.add.sprite(x, y + 80, 'boom');
             explosion.animations.add('boom1');
             explosion.play('boom1', 15, false, true);
-            fire.push(e xplosion);
+            fire.push(explosion);
 
             explosion = game.add.sprite(x, y - 80, 'boom');
             explosion.animations.add('boom1');
@@ -1108,6 +1122,9 @@ var thirdLevel = {
         // Weapon sprites
         game.load.image('bomb', 'assets/bauble.png');
         game.load.image('explosion', 'assets/eksplozja2.png');
+
+        //animacje
+        game.load.spritesheet('boom', 'assets/boom.png', 40, 40, 14);
 
         // Player sprites
         game.load.image('bomber', 'assets/postac/postac-front.png');
