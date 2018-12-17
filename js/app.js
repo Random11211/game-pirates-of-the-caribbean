@@ -58,25 +58,15 @@ var mainState = {
         this.addPlayers();
         this.createMap();
 
-        this.cocoAmount = 0;
+        this.cocoAmount = 5;
 
         //timer dla wrogow
         timer = game.time.create(false);
-        timer.loop(500, this.resetTimer, this);
+        timer.loop(1000, this.resetTimer, this);
         timer.start();
 
-
-        // this.addEasyEnemy(10, 5);
-        // this.addEasyEnemy(10, 5);
-        // this.addEasyEnemy(10, 5);
-
-        // this.addNormalEnemy(5, 5);
-        // this.addNormalEnemy(5, 5);
-        // this.addNormalEnemy(5, 5);
-
-        // this.addStrongEnemy(15, 5);
-        // this.addStrongEnemy(15, 5);
-        // this.addStrongEnemy(15, 5);
+        this.addNormalEnemy(1, 6);
+        this.addStrongEnemy(2, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -94,23 +84,9 @@ var mainState = {
         enemyCanRun = true;
     },
 
-    addTreasure: function (x, y) {
-        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
-        game.physics.arcade.enable(treasure);
-        treasure.body.immovable = true;
-        this.treasureList.add(treasure);
-    },
-
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
-            this.hardEnemies.forEach(function (enemy) {
-                //enemy.resume();
-            })
-            this.hardEnemyMove();
-
-
-
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -130,10 +106,6 @@ var mainState = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
-            this.hardEnemies.forEach(function (enemy) {
-                //enemy.pause();
-            })
-            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -144,6 +116,7 @@ var mainState = {
         if (enemyCanRun) {
             enemyCanRun = false;
             this.normalEnemyMove();
+            this.hardEnemyMove();
         }
 
         game.physics.arcade.collide(this.player, this.treasureList);
@@ -157,14 +130,14 @@ var mainState = {
         game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
         game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
 
-        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
-        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
-        game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
-    },
+        this.normalEnemies.forEach(function (enemy) {
+            game.physics.arcade.collide(enemy, this.mainState.wallList);
+            game.physics.arcade.collide(enemy, this.mainState.brickList);
+        });
 
-    enemycollide: function (enemy) {
-        enemy.body.velocity.x = 0;
-        enemy.body.velocity.y = 0;
+        game.physics.arcade.overlap(this.player, this.portalList, this.nextLevel, null, this);
+
+        game.physics.arcade.collide(this.player, this.portalList);
     },
 
     createMap: function () {
@@ -177,23 +150,22 @@ var mainState = {
                 }
             }
         }
-        this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
-        this.addBrick(2, 3), this.addBrick(2, 7);
-        this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
-        this.addBrick(4, 3), this.addBrick(4, 5);
-        this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
-        this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
-        this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
-        this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
-        this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
-        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
-        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
-        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
-        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
-        //na (7,7) będzie ustawiony portal na nast lvl
-        this.addPortal(7, 7);
-        this.addBoots(11, 1);
-        this.addStar(2, 11);
+        // this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        // this.addBrick(2, 3), this.addBrick(2, 7);
+        // this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        // this.addBrick(4, 3), this.addBrick(4, 5);
+        // this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        // this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        // this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        // this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
+        // this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        // this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        // this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        // this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        // this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
+         this.addPortal(7, 7);
+        // this.addBoots(11, 1);
+        // this.addStar(2, 11);
         this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
     },
 
@@ -269,7 +241,6 @@ var mainState = {
 
     enemyCollision: function () {
         this.burn();
-        this.gameOver();
     },
 
     addEasyEnemy: function (x, y) {
@@ -298,20 +269,20 @@ var mainState = {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
             switch (direction) {
                 case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
+                    enemy.body.velocity.y = -(enemySpeed);
+                    enemy.body.velocity.x = 0;
                     break;
                 case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.x = (enemySpeed);
                     enemy.body.velocity.y = 0;
                     break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
+                case 2:
+                    enemy.body.velocity.y = (enemySpeed);
                     enemy.body.velocity.x = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.x = -(enemySpeed);
+                    enemy.body.velocity.y = 0;
                     break;
             }
         });
@@ -320,29 +291,26 @@ var mainState = {
     hardEnemyMove: function () {
         this.hardEnemies.forEach(function (enemy) {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+
             switch (direction) {
                 case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
+                    enemy.body.velocity.y = -(enemySpeed);
+                    enemy.body.velocity.x = 0;
                     break;
                 case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.x = (enemySpeed);
                     enemy.body.velocity.y = 0;
                     break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
+                case 2:
+                    enemy.body.velocity.y = (enemySpeed);
                     enemy.body.velocity.x = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.x = -(enemySpeed);
+                    enemy.body.velocity.y = 0;
                     break;
             }
         });
-    },
-
-    enemyMoveDirection: function (a, b) {
-        return Math.floor(Math.random() * (b - a + 1)) + a;
     },
 
     addStar: function (x, y) {
@@ -377,7 +345,6 @@ var mainState = {
         game.physics.arcade.enable(brick);
         brick.body.immovable = true;
         this.brickList.add(brick);
-
     },
 
     detonateBomb: function (x, y, explosionList, wallList, brickList, treasureList) {
@@ -440,6 +407,52 @@ var mainState = {
                 mainState.addCoco(element.x / mainState.PIXEL_SIZE, element.y / mainState.PIXEL_SIZE);
                 element.kill();
             })
+
+
+            //zabijanie latwych przeciwnikow
+            temp = this.mainState.easyEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+            //zabijanie normalnych przeciwnikow
+            temp = this.mainState.normalEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+
+            //zabijanie trudnych przeciwnikow
+            temp = this.mainState.hardEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+
         }, 500);
     },
 
@@ -484,6 +497,12 @@ var mainState = {
         this.playerDrop = true;
     },
 };
+
+
+//                  DRUGI LEVEL  !!!!!!!!!!!!
+
+
+
 
 var secondLevel = {
     preload: function () {
@@ -545,25 +564,15 @@ var secondLevel = {
         this.addPlayers();
         this.createMap();
 
-        this.cocoAmount = 0;
+        this.cocoAmount = 5;
 
         //timer dla wrogow		
         timer = game.time.create(false);
-        timer.loop(500, this.resetTimer, this);
+        timer.loop(1000, this.resetTimer, this);
         timer.start();
 
-
-        // this.addEasyEnemy(10, 5);		
-        // this.addEasyEnemy(10, 5);		
-        // this.addEasyEnemy(10, 5);		
-
-        // this.addNormalEnemy(5, 5);		
-        // this.addNormalEnemy(5, 5);		
-        // this.addNormalEnemy(5, 5);		
-
-        // this.addStrongEnemy(15, 5);		
-        // this.addStrongEnemy(15, 5);		
-        // this.addStrongEnemy(15, 5);
+        this.addNormalEnemy(1, 6);
+        this.addStrongEnemy(2, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -581,21 +590,9 @@ var secondLevel = {
         enemyCanRun = true;
     },
 
-    addTreasure: function (x, y) {
-        var treasure = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'treasure');
-        game.physics.arcade.enable(treasure);
-        treasure.body.immovable = true;
-        this.treasureList.add(treasure);
-    },
-
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
-            this.hardEnemies.forEach(function (enemy) {
-                //enemy.resume();		
-            })
-            this.hardEnemyMove();
-
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -615,10 +612,6 @@ var secondLevel = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
-            this.hardEnemies.forEach(function (enemy) {
-                //enemy.pause();		
-            })
-            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -629,6 +622,7 @@ var secondLevel = {
         if (enemyCanRun) {
             enemyCanRun = false;
             this.normalEnemyMove();
+            this.hardEnemyMove();
         }
 
         game.physics.arcade.collide(this.player, this.treasureList);
@@ -642,14 +636,14 @@ var secondLevel = {
         game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
         game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
 
-        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
-        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
-        game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
-    },
+        this.normalEnemies.forEach(function (enemy) {
+            game.physics.arcade.collide(enemy, this.secondLevel.wallList);
+            game.physics.arcade.collide(enemy, this.secondLevel.brickList);
+        });
 
-    enemycollide: function (enemy) {
-        enemy.body.velocity.x = 0;
-        enemy.body.velocity.y = 0;
+        game.physics.arcade.overlap(this.player, this.portalList, this.nextLevel, null, this);
+
+        game.physics.arcade.collide(this.player, this.portalList);
     },
 
     createMap: function () {
@@ -675,17 +669,10 @@ var secondLevel = {
         this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
         this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
         this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
-        //na (7,7) będzie ustawiony portal na nast lvl
         this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
         this.addTreasure(8, 1), this.addTreasure(8, 5), this.addTreasure(12, 7), this.addTreasure(3, 12), this.addTreasure(7, 12);
-    },
-
-    burn: function () {
-        this.player.kill();
-        this.playerDrop = false;
-        this.gameOver();
     },
 
     addTreasure: function (x, y) {
@@ -693,6 +680,12 @@ var secondLevel = {
         game.physics.arcade.enable(treasure);
         treasure.body.immovable = true;
         this.treasureList.add(treasure);
+    },
+
+    burn: function () {
+        this.player.kill();
+        this.playerDrop = false;
+        this.gameOver();
     },
 
     addCoco: function (x, y) {
@@ -754,7 +747,6 @@ var secondLevel = {
 
     enemyCollision: function () {
         this.burn();
-        this.gameOver();
     },
 
     addEasyEnemy: function (x, y) {
@@ -783,20 +775,20 @@ var secondLevel = {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
             switch (direction) {
                 case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
+                    enemy.body.velocity.y = -(enemySpeed);
+                    enemy.body.velocity.x = 0;
                     break;
                 case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.x = (enemySpeed);
                     enemy.body.velocity.y = 0;
                     break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
+                case 2:
+                    enemy.body.velocity.y = (enemySpeed);
                     enemy.body.velocity.x = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.x = -(enemySpeed);
+                    enemy.body.velocity.y = 0;
                     break;
             }
         });
@@ -805,30 +797,28 @@ var secondLevel = {
     hardEnemyMove: function () {
         this.hardEnemies.forEach(function (enemy) {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+
             switch (direction) {
                 case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
+                    enemy.body.velocity.y = -(enemySpeed);
+                    enemy.body.velocity.x = 0;
                     break;
                 case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.x = (enemySpeed);
                     enemy.body.velocity.y = 0;
                     break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
+                case 2:
+                    enemy.body.velocity.y = (enemySpeed);
                     enemy.body.velocity.x = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.x = -(enemySpeed);
+                    enemy.body.velocity.y = 0;
                     break;
             }
         });
     },
 
-    enemyMoveDirection: function (a, b) {
-        return Math.floor(Math.random() * (b - a + 1)) + a;
-    },
 
     addStar: function (x, y) {
         var star = game.add.sprite(x * this.PIXEL_SIZE, y * this.PIXEL_SIZE, 'star');
@@ -925,6 +915,50 @@ var secondLevel = {
                 secondLevel.addCoco(element.x / secondLevel.PIXEL_SIZE, element.y / secondLevel.PIXEL_SIZE);
                 element.kill();
             })
+
+            //zabijanie latwych przeciwnikow
+            temp = this.secondLevel.easyEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+            //zabijanie normalnych przeciwnikow
+            temp = this.secondLevel.normalEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+
+            //zabijanie trudnych przeciwnikow
+            temp = this.secondLevel.hardEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
         }, 500);
     },
 
@@ -969,6 +1003,11 @@ var secondLevel = {
         this.playerDrop = true;
     }
 }
+
+
+//              TRZECI LEVEL !!!!!!!!
+
+
 
 var thirdLevel = {
     preload: function () {
@@ -1035,21 +1074,12 @@ var thirdLevel = {
 
         //timer dla wrogow		
         timer = game.time.create(false);
-        timer.loop(500, this.resetTimer, this);
+        timer.loop(1000, this.resetTimer, this);
         timer.start();
 
 
-        // this.addEasyEnemy(10, 5);		
-        // this.addEasyEnemy(10, 5);		
-        // this.addEasyEnemy(10, 5);		
-
-        // this.addNormalEnemy(5, 5);		
-        // this.addNormalEnemy(5, 5);		
-        // this.addNormalEnemy(5, 5);		
-
-        // this.addStrongEnemy(15, 5);		
-        // this.addStrongEnemy(15, 5);		
-        // this.addStrongEnemy(15, 5);
+        this.addNormalEnemy(1, 6);
+        this.addStrongEnemy(2, 5);
 
         this.playerSpeed = 150;
         this.playerPower = false;
@@ -1077,11 +1107,6 @@ var thirdLevel = {
     update: function () {
 
         if (this.aKey.isDown || this.sKey.isDown || this.dKey.isDown || this.wKey.isDown) {
-            this.hardEnemies.forEach(function (enemy) {
-                //enemy.resume();		
-            })
-            this.hardEnemyMove();
-
             if (this.aKey.isDown) {
                 this.player.body.velocity.x = -(this.playerSpeed);
                 this.player.loadTexture('bomber-left', 0);
@@ -1101,10 +1126,6 @@ var thirdLevel = {
         } else {
             this.player.body.velocity.x = 0;
             this.player.body.velocity.y = 0;
-            this.hardEnemies.forEach(function (enemy) {
-                //enemy.pause();		
-            })
-            //this.enemyList.forEach(this.enemycollide);
         }
 
         if (this.spaceKey.justUp) {
@@ -1115,13 +1136,13 @@ var thirdLevel = {
         if (enemyCanRun) {
             enemyCanRun = false;
             this.normalEnemyMove();
+            this.hardEnemyMove();
         }
 
         game.physics.arcade.collide(this.player, this.treasureList);
-        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this);
+        game.physics.arcade.collide(this.player, this.cocoCollectionList, this.collectCoco, null, this)
         game.physics.arcade.collide(this.player, this.wallList);
         game.physics.arcade.collide(this.player, this.brickList);
-        game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
         game.physics.arcade.overlap(this.player, this.explosionList, this.burn, null, this);
         game.physics.arcade.overlap(this.player, this.bootList, this.speedUp, null, this);
         game.physics.arcade.overlap(this.player, this.starList, this.starUp, null, this);
@@ -1129,9 +1150,14 @@ var thirdLevel = {
         game.physics.arcade.overlap(this.player, this.normalEnemies, this.enemyCollision, null, this);
         game.physics.arcade.overlap(this.player, this.hardEnemies, this.enemyCollision, null, this);
 
-        //game.physics.arcade.overlap(this.enemyList, this.wallList, this.enemycollide, null, this);
-        //game.physics.arcade.overlap(this.enemyList, this.brickList, this.enemycollide, null, this);
-        game.physics.arcade.collide(this.player, this.portalList, this.nextLevel, null, this);
+        this.normalEnemies.forEach(function (enemy) {
+            game.physics.arcade.collide(enemy, this.thirdLevel.wallList);
+            game.physics.arcade.collide(enemy, this.thirdLevel.brickList);
+        });
+
+        game.physics.arcade.overlap(this.player, this.portalList, this.nextLevel, null, this);
+
+        game.physics.arcade.collide(this.player, this.portalList);
     },
 
     enemycollide: function (enemy) {
@@ -1149,20 +1175,19 @@ var thirdLevel = {
                 }
             }
         }
-        this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
-        this.addBrick(2, 3), this.addBrick(2, 7);
-        this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
-        this.addBrick(4, 3), this.addBrick(4, 5);
-        this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
-        this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
-        this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
-        this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
-        this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
-        this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
-        this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
-        this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
-        this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
-        //na (7,7) będzie ustawiony portal na nast lvl
+        // this.addBrick(1, 3), this.addBrick(1, 4), this.addBrick(1, 10), this.addBrick(1, 11);
+        // this.addBrick(2, 3), this.addBrick(2, 7);
+        // this.addBrick(3, 1), this.addBrick(3, 4), this.addBrick(3, 5), this.addBrick(3, 10), this.addBrick(3, 11);
+        // this.addBrick(4, 3), this.addBrick(4, 5);
+        // this.addBrick(5, 4), this.addBrick(5, 5), this.addBrick(5, 9), this.addBrick(5, 10), this.addBrick(5, 12), this.addBrick(5, 13);
+        // this.addBrick(6, 1), this.addBrick(6, 3), this.addBrick(6, 5), this.addBrick(6, 7), this.addBrick(6, 9), this.addBrick(6, 13);
+        // this.addBrick(7, 1), this.addBrick(7, 2), this.addBrick(7, 3), this.addBrick(7, 5), this.addBrick(7, 6), this.addBrick(7, 8), this.addBrick(7, 9), this.addBrick(7, 13);
+        // this.addBrick(8, 7), this.addBrick(8, 9), this.addBrick(8, 13);
+        // this.addBrick(9, 1), this.addBrick(9, 2), this.addBrick(9, 3), this.addBrick(9, 9), this.addBrick(9, 13);
+        // this.addBrick(10, 3), this.addBrick(10, 9), this.addBrick(10, 11), this.addBrick(10, 13);
+        // this.addBrick(11, 2), this.addBrick(11, 3), this.addBrick(11, 4), this.addBrick(11, 5), this.addBrick(11, 6), this.addBrick(11, 7), this.addBrick(11, 8), this.addBrick(11, 9), this.addBrick(11, 10);
+        // this.addBrick(12, 1), this.addBrick(12, 5), this.addBrick(12, 11), this.addBrick(12, 13);
+        // this.addBrick(13, 4), this.addBrick(13, 5), this.addBrick(13, 6);
         this.addPortal(7, 7);
         this.addBoots(11, 1);
         this.addStar(2, 11);
@@ -1242,7 +1267,6 @@ var thirdLevel = {
 
     enemyCollision: function () {
         this.burn();
-        this.gameOver();
     },
 
     addEasyEnemy: function (x, y) {
@@ -1271,20 +1295,20 @@ var thirdLevel = {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
             switch (direction) {
                 case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
+                    enemy.body.velocity.y = -(enemySpeed);
+                    enemy.body.velocity.x = 0;
                     break;
                 case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.x = (enemySpeed);
                     enemy.body.velocity.y = 0;
                     break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
+                case 2:
+                    enemy.body.velocity.y = (enemySpeed);
                     enemy.body.velocity.x = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.x = -(enemySpeed);
+                    enemy.body.velocity.y = 0;
                     break;
             }
         });
@@ -1293,29 +1317,26 @@ var thirdLevel = {
     hardEnemyMove: function () {
         this.hardEnemies.forEach(function (enemy) {
             var direction = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+
             switch (direction) {
                 case 0:
-                    enemy.body.velocity.x = (this.playerSpeed);
-                    enemy.body.velocity.y = 0;
+                    enemy.body.velocity.y = -(enemySpeed);
+                    enemy.body.velocity.x = 0;
                     break;
                 case 1:
-                    enemy.body.velocity.y = (this.playerSpeed);
-                    enemy.body.velocity.x = 0;
-                    break;
-                case 2:
-                    enemy.body.velocity.x = -(this.playerSpeed);
+                    enemy.body.velocity.x = (enemySpeed);
                     enemy.body.velocity.y = 0;
                     break;
-                case 3:
-                    enemy.body.velocity.y = -(this.playerSpeed);
+                case 2:
+                    enemy.body.velocity.y = (enemySpeed);
                     enemy.body.velocity.x = 0;
+                    break;
+                case 3:
+                    enemy.body.velocity.x = -(enemySpeed);
+                    enemy.body.velocity.y = 0;
                     break;
             }
         });
-    },
-
-    enemyMoveDirection: function (a, b) {
-        return Math.floor(Math.random() * (b - a + 1)) + a;
     },
 
     addStar: function (x, y) {
@@ -1413,6 +1434,51 @@ var thirdLevel = {
                 thirdLevel.addCoco(element.x / thirdLevel.PIXEL_SIZE, element.y / thirdLevel.PIXEL_SIZE);
                 element.kill();
             })
+
+            //zabijanie latwych przeciwnikow
+            temp = this.thirdLevel.easyEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+            //zabijanie normalnych przeciwnikow
+            temp = this.thirdLevel.normalEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+
+            //zabijanie trudnych przeciwnikow
+            temp = this.thirdLevel.hardEnemies.filter(function (element) {
+                for (var i = 0; i < fire.length; i++) {
+                    if (Math.abs(element.x - fire[i].x) < 40 && Math.abs(element.y - fire[i].y) < 40) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            temp.list.forEach(function (element) {
+                element.kill();
+            });
+
+
         }, 500);
     },
 
@@ -1465,7 +1531,7 @@ game.state.add('main', mainState);
 game.state.add('lvl2', secondLevel);
 game.state.add('lvl3', thirdLevel);
 game.state.start('main');
-var playerSpeed = 150;
+var enemySpeed = 0;
 var timer;
 var i = 0;
 var enemyCanRun = true;
