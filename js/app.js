@@ -511,7 +511,7 @@ var secondLevel = {
         game.load.image('star', 'assets/banana.png');
 
         //going to next level sprites		
-        game.load.image('coco', 'assets/coconut.png');
+        game.load.image('coco', 'assets/coins.png');
         game.load.image('portal', 'assets/portal.png');
 
         //enemy sprites		
@@ -978,7 +978,8 @@ var thirdLevel = {
         game.load.image('wall', 'assets/christmas-tree.png');
         game.load.image('brick', 'assets/deer.png');
         game.load.image('background', 'assets/snow.jpg');
-        game.load.image('game-over', 'assets/game-over.jpg')
+        game.load.image('game-over', 'assets/game-over.jpg');
+        game.load.image('finish', 'assets/finish.jpg');
 
         // Weapon sprites
         game.load.image('bomb', 'assets/bauble.png');
@@ -996,7 +997,7 @@ var thirdLevel = {
         game.load.image('star', 'assets/gingerbread-man.png');
 
         //going to next level sprites		
-        game.load.image('coco', 'assets/coconut.png');
+        game.load.image('coco', 'assets/icecream.png');
         game.load.image('portal', 'assets/portal.png');
 
         //enemy sprites		
@@ -1204,15 +1205,12 @@ var thirdLevel = {
     },
 
     finish: function () {
-        //tutaj końcowa grafika!!!
+        game.add.image(0, 0, 'finish');
     },
 
     nextLevel: function () {
         if (this.cocoAmount >= 5) {
-            this.portalList.forEach(function (element) {
-                element.kill();
-                finish();
-            })
+            this.finish();
         }
     },
 
