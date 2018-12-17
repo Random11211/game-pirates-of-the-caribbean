@@ -938,7 +938,7 @@ var secondLevel = {
             explosion = game.add.sprite(x, y + 80, 'boom');
             explosion.animations.add('boom1');
             explosion.play('boom1', 15, false, true);
-            fire.push(e xplosion);
+            fire.push(explosion);
 
             explosion = game.add.sprite(x, y - 80, 'boom');
             explosion.animations.add('boom1');
